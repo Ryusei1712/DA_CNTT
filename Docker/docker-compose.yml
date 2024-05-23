@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  seafoodManagement:
+    image: mysql:latest
+    environment:
+      - MYSQL_DATABASE=Seafood_Product_Management
+      - MYSQL_ROOT_PASSWORD=seafood123
+    ports:
+      - '3306:3306'
