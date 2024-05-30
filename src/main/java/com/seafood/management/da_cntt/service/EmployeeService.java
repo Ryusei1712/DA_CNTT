@@ -57,4 +57,9 @@ public class EmployeeService {
         }
         return false;
     }
+
+    public int countEmployeesByStatus(String status) {
+        return employeeRepository.countByStatus(status);
+    }
+
 }

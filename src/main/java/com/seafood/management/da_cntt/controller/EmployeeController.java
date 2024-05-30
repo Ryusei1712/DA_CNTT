@@ -59,5 +59,20 @@ public class EmployeeController {
         }
     }
 
+    @GetMapping("/countNewEmployees")
+    public ResponseEntity<Integer> countNewEmployees() {
+        int count = employeeService.countEmployeesByStatus("Nhân viên mới");
+        return new ResponseEntity<>(count, HttpStatus.OK);
+    }
+    @GetMapping("/countFiredEmployees")
+    public ResponseEntity<Integer> countFiredEmployees() {
+        int count = employeeService.countEmployeesByStatus("Nhân viên đã nghỉ");
+        return new ResponseEntity<>(count, HttpStatus.OK);
+    }
+    @GetMapping("/countLeaveByPolicyEmployees")
+    public ResponseEntity<Integer> countLeaveByPolicyEmployees() {
+        int count = employeeService.countEmployeesByStatus("Nghỉ theo chế độ");
+        return new ResponseEntity<>(count, HttpStatus.OK);
+    }
 
 }

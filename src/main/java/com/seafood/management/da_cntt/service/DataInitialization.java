@@ -17,8 +17,8 @@ public class DataInitialization {
     public void initializeData() {
         // Thêm mẫu dữ liệu cho Employee
         employeeService.saveEmployee(new Employee("NV001", "Nguyễn Văn A", "nguyenvana@gmail.com", "Nhân viên", "Nhân viên mới"));
-        employeeService.saveEmployee(new Employee("NV002", "Trần Thị B", "tranthib@gmail.com", "Nhân viên", "Nhân viên mới"));
-        employeeService.saveEmployee(new Employee("NV003", "Lê Văn C", "levanc@gmail.com", "Nhân viên", "Nhân viên mới"));
+        employeeService.saveEmployee(new Employee("NV002", "Trần Thị B", "tranthib@gmail.com", "Nhân viên", "Nhân viên đã nghỉ"));
+        employeeService.saveEmployee(new Employee("NV003", "Lê Văn C", "levanc@gmail.com", "Nhân viên", "Nghỉ theo chế độ"));
         employeeService.saveEmployee(new Employee("NV004", "Phạm Thị D", "phamthid@gmail.com", "Nhân viên", "Nhân viên mới"));
         employeeService.saveEmployee(new Employee("NV005", "Hoàng Văn E", "hoangvane@gmail.com", "Nhân viên", "Nhân viên mới"));
         employeeService.saveEmployee(new Employee("NV006", "Vũ Thị F", "vuthif@gmail.com", "Nhân viên", "Nhân viên mới"));
