@@ -49,7 +49,7 @@ public class EmployeeController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/id/{id}")
     public ResponseEntity<String> deleteEmployee(@PathVariable Long id) {
         boolean deleted = employeeService.deleteEmployee(id);
         if (deleted) {
@@ -59,6 +59,15 @@ public class EmployeeController {
         }
     }
 
+    @DeleteMapping("/code/{employeeCode}")
+    public ResponseEntity<String> deleteEmployeeByCode(@PathVariable String employeeCode) {
+        boolean deleted = employeeService.deleteEmployeeByCode(employeeCode);
+        if (deleted) {
+            return new ResponseEntity<>("Employee has been deleted successfully", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Employee not found", HttpStatus.NOT_FOUND);
+        }
+    }
     @GetMapping("/countNewEmployees")
     public ResponseEntity<Integer> countNewEmployees() {
         int count = employeeService.countEmployeesByStatus("Nhân viên mới");

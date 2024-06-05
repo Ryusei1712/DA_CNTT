@@ -2,6 +2,7 @@ package com.seafood.management.da_cntt.service;
 
 import com.seafood.management.da_cntt.model.Employee;
 import com.seafood.management.da_cntt.repository.EmployeeRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,11 +30,11 @@ public class EmployeeService {
     public Optional<Employee> getEmployeeByEmail(String email) {
         return employeeRepository.findByEmail(email);
     }
-
+    @Transactional
     public Employee saveEmployee(Employee employee) {
         return employeeRepository.save(employee);
     }
-
+    @Transactional
     public Optional<Employee> updateEmployee(Long id, Employee employee) {
         Optional<Employee> existingEmployeeOptional = employeeRepository.findById(id);
         if (existingEmployeeOptional.isPresent()) {
@@ -48,11 +49,20 @@ public class EmployeeService {
             return Optional.empty();
         }
     }
-
+    @Transactional
     public boolean deleteEmployee(Long id) {
         Optional<Employee> employeeOptional = employeeRepository.findById(id);
         if (employeeOptional.isPresent()) {
             employeeRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+    @Transactional
+    public boolean deleteEmployeeByCode(String employeeCode) {
+        Optional<Employee> employeeOptional = employeeRepository.findByEmployeeCode(employeeCode);
+        if (employeeOptional.isPresent()) {
+            employeeRepository.deleteByEmployeeCode(employeeCode);
             return true;
         }
         return false;

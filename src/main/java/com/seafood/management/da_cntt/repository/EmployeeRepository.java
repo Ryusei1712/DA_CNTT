@@ -13,4 +13,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     Optional<Employee> findByEmail(String email);
     int countByStatus(String status);
+
+    void deleteByEmployeeCode(String employeeCode);
 }
