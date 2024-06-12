@@ -2,10 +2,12 @@ package com.seafood.management.da_cntt.service;
 
 import com.seafood.management.da_cntt.model.ViolationList;
 import com.seafood.management.da_cntt.repository.ViolationListRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ViolationListService {
@@ -13,19 +15,54 @@ public class ViolationListService {
     @Autowired
     private ViolationListRepository violationListRepository;
 
-    public ViolationList saveViolationList(ViolationList violationList) {
-        return violationListRepository.save(violationList);
-    }
-
     public List<ViolationList> getAllViolationLists() {
         return violationListRepository.findAll();
     }
 
-    public ViolationList updateViolationList(ViolationList violationList) {
+    public Optional<ViolationList> getViolationListById(Long id) {
+        return violationListRepository.findById(id);
+    }
+
+    public Optional<ViolationList> getViolationListByEmployeeId(String employeeId) {
+        return violationListRepository.findByEmployeeId(employeeId);
+    }
+
+    @Transactional
+    public ViolationList saveViolationList(ViolationList violationList) {
         return violationListRepository.save(violationList);
     }
 
-    public void deleteViolationList(Long id) {
-        violationListRepository.deleteById(id);
+    @Transactional
+    public Optional<ViolationList> updateViolationList(Long id, ViolationList violationList) {
+        Optional<ViolationList> existingViolationListOptional = violationListRepository.findById(id);
+        if (existingViolationListOptional.isPresent()) {
+            ViolationList existingViolationList = existingViolationListOptional.get();
+            existingViolationList.setEmployeeId(violationList.getEmployeeId());
+            existingViolationList.setEmployeeName(violationList.getEmployeeName());
+            existingViolationList.setViolationType(violationList.getViolationType());
+            existingViolationList.setSeverity(violationList.getSeverity());
+            existingViolationList.setStatus(violationList.getStatus());
+            return Optional.of(violationListRepository.save(existingViolationList));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Transactional
+    public boolean deleteViolationList(Long id) {
+        Optional<ViolationList> violationListOptional = violationListRepository.findById(id);
+        if (violationListOptional.isPresent()) {
+            violationListRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    public int countViolationListsBySeverity(int severity) {
+        return violationListRepository.countBySeverity(severity);
+    }
+
+    public int countViolationListsByStatus(String status) {
+        return violationListRepository.countByStatus(status);
     }
 }
