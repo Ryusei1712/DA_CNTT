@@ -18,11 +18,15 @@ public class ViolationList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(name = "employeeId", nullable = false)
     private String employeeId;
+    @Column(name = "employeeName", nullable = false)
     private String employeeName;
+    @Column(name = "violationType")
     private String violationType;
+    @Column(name = "severity")
     private int severity;
+    @Column(name = "status")
     private String status;
 
     public ViolationList(String employeeId, String employeeName, String violationType, int severity, String status) {

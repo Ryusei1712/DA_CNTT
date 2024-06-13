@@ -3,11 +3,14 @@ package com.seafood.management.da_cntt.service;
 import com.seafood.management.da_cntt.model.Document;
 import com.seafood.management.da_cntt.model.Employee;
 import com.seafood.management.da_cntt.model.LeaveRequest;
+import com.seafood.management.da_cntt.model.Timesheet;
 import com.seafood.management.da_cntt.model.ViolationList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
+import java.time.LocalDate;
+import java.util.Random;
 
 @Component
 public class DataInitialization {
@@ -23,6 +26,9 @@ public class DataInitialization {
 
     @Autowired
     private ViolationListService violationListService;
+
+    @Autowired
+    private TimesheetService timesheetService;
 
     @PostConstruct
     public void initializeData() {
@@ -83,5 +89,17 @@ public class DataInitialization {
         violationListService.saveViolationList(new ViolationList("NV008", "Bùi Thị H", "Trộm cắp", 2, "Cảnh cáo"));
         violationListService.saveViolationList(new ViolationList("NV009", "Ngô Văn I", "Phá hoại tài sản", 3, "Sa thải"));
         violationListService.saveViolationList(new ViolationList("NV010", "Lý Thị K", "Gây rối", 1, "Nhắc nhở"));
+
+        // Thêm mẫu dữ liệu cho Timesheet
+        Random random = new Random();
+        LocalDate startDate = LocalDate.now().minusDays(30);
+        LocalDate endDate = LocalDate.now();
+
+        for (int i = 1; i <= 20; i++) {
+            LocalDate randomDate = startDate.plusDays(random.nextInt(30));
+            int hoursWorked = random.nextInt(8) + 1;
+            String status = random.nextBoolean() ? "Đã chấm công" : "Chưa chấm công";
+            timesheetService.saveTimesheet(new Timesheet(null, Long.valueOf(i), randomDate, hoursWorked, status));
+        }
     }
 }

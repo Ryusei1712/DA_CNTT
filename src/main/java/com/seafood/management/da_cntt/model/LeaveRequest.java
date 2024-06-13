@@ -17,12 +17,17 @@ public class LeaveRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(name = "employeeId", nullable = false)
     private String employeeId;
+    @Column(name = "employeeName", nullable = false)
     private String employeeName;
+    @Column(name = "email", nullable = false)
     private String email;
+    @Column(name = "position")
     private String position;
+    @Column(name = "reason")
     private String reason;
+    @Column(name = "requestType")
     private String requestType;
 
     public LeaveRequest(String employeeId, String employeeName, String email, String position, String reason, String requestType) {

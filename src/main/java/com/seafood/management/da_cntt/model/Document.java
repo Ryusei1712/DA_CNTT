@@ -18,10 +18,15 @@ public class Document {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "documentType")
     private String documentType;
+    @Column(name = "employeeId", nullable = false)
     private String employeeId;
+    @Column(name = "senderName", nullable = false)
     private String senderName;
+    @Column(name = "email", nullable = false)
     private String email;
+    @Column(name = "status")
     private String status;
 
     public Document(String documentType, String employeeId, String senderName, String email, String status) {
