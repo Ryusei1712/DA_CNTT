@@ -21,7 +21,7 @@ public class Timesheet {
     private Long id;
 
     @Column(name = "employee_id", nullable = false)
-    private Long employeeId;
+    private String employeeId;
 
     @Column(name = "date", nullable = false)
     private LocalDate date;
@@ -31,6 +31,13 @@ public class Timesheet {
 
     @Column(name = "status", nullable = false)
     private String status;
+
+    public Timesheet(String employeeId, LocalDate date, int hoursWorked, String status) {
+        this.employeeId = employeeId;
+        this.date = date;
+        this.hoursWorked = hoursWorked;
+        this.status = status;
+    }
 
     @Override
     public String toString() {

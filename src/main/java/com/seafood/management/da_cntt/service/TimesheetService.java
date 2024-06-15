@@ -24,7 +24,7 @@ public class TimesheetService {
         return timesheetRepository.findById(id);
     }
 
-    public List<Timesheet> getTimesheetsByEmployeeId(Long employeeId) {
+    public List<Timesheet> getTimesheetsByEmployeeId(String employeeId) {
         return timesheetRepository.findByEmployeeId(employeeId);
     }
 

@@ -93,13 +93,15 @@ public class DataInitialization {
         // Thêm mẫu dữ liệu cho Timesheet
         Random random = new Random();
         LocalDate startDate = LocalDate.now().minusDays(30);
-        LocalDate endDate = LocalDate.now();
 
         for (int i = 1; i <= 20; i++) {
             LocalDate randomDate = startDate.plusDays(random.nextInt(30));
             int hoursWorked = random.nextInt(8) + 1;
             String status = random.nextBoolean() ? "Đã chấm công" : "Chưa chấm công";
-            timesheetService.saveTimesheet(new Timesheet(null, Long.valueOf(i), randomDate, hoursWorked, status));
+            if(i<10)
+                timesheetService.saveTimesheet(new Timesheet( "NV00"+i, randomDate, hoursWorked, status));
+            else
+                timesheetService.saveTimesheet(new Timesheet( "NV0"+i, randomDate, hoursWorked, status));
         }
     }
 }

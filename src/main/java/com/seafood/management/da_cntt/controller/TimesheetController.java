@@ -35,7 +35,7 @@ public class TimesheetController {
     }
 
     @GetMapping("/employee/{employeeId}")
-    public ResponseEntity<List<Timesheet>> getTimesheetsByEmployeeId(@PathVariable Long employeeId) {
+    public ResponseEntity<List<Timesheet>> getTimesheetsByEmployeeId(@PathVariable String employeeId) {
         List<Timesheet> timesheets = timesheetService.getTimesheetsByEmployeeId(employeeId);
         return new ResponseEntity<>(timesheets, HttpStatus.OK);
     }
