@@ -23,8 +23,8 @@ public class ViolationListService {
         return violationListRepository.findById(id);
     }
 
-    public Optional<ViolationList> getViolationListByEmployeeId(String employeeId) {
-        return violationListRepository.findByEmployeeId(employeeId);
+    public List<ViolationList> getViolationListByEmployeeId(String employeeId) {
+        return violationListRepository.findByEmployee_EmployeeCode(employeeId);
     }
 
     @Transactional
@@ -37,7 +37,7 @@ public class ViolationListService {
         Optional<ViolationList> existingViolationListOptional = violationListRepository.findById(id);
         if (existingViolationListOptional.isPresent()) {
             ViolationList existingViolationList = existingViolationListOptional.get();
-            existingViolationList.setEmployeeId(violationList.getEmployeeId());
+            existingViolationList.setEmployee(violationList.getEmployee());
             existingViolationList.setEmployeeName(violationList.getEmployeeName());
             existingViolationList.setViolationType(violationList.getViolationType());
             existingViolationList.setSeverity(violationList.getSeverity());

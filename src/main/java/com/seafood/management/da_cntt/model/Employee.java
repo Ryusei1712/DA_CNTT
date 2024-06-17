@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -33,6 +35,18 @@ public class Employee {
     @Column(name = "status")
     private String status;
 
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Document> documents;
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LeaveRequest> leaveRequests;
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ViolationList> violationLists;
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Timesheet> timesheets;
+
     public Employee(String employeeCode, String employeeName, String email, String position, String status) {
         this.employeeCode = employeeCode;
         this.employeeName = employeeName;
@@ -44,8 +58,7 @@ public class Employee {
     @Override
     public String toString() {
         return "Employee{" +
-                "id=" + id +
-                ", employeeCode='" + employeeCode + '\'' +
+                "employeeCode='" + employeeCode + '\'' +
                 ", employeeName='" + employeeName + '\'' +
                 ", email='" + email + '\'' +
                 ", position='" + position + '\'' +

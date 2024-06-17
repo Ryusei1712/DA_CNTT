@@ -26,11 +26,8 @@ public class DocumentController {
     @GetMapping("/{id}")
     public ResponseEntity<Document> getDocumentById(@PathVariable Long id) {
         Optional<Document> document = documentService.getDocumentById(id);
-        if (document.isPresent()) {
-            return new ResponseEntity<>(document.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return document.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping
@@ -42,31 +39,22 @@ public class DocumentController {
     @PutMapping("/{id}")
     public ResponseEntity<Document> updateDocument(@PathVariable Long id, @RequestBody Document document) {
         Optional<Document> updatedDocument = documentService.updateDocument(id, document);
-        if (updatedDocument.isPresent()) {
-            return new ResponseEntity<>(updatedDocument.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return updatedDocument.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping("/id/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteDocument(@PathVariable Long id) {
         boolean deleted = documentService.deleteDocument(id);
-        if (deleted) {
-            return new ResponseEntity<>("Document has been deleted successfully", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Document not found", HttpStatus.NOT_FOUND);
-        }
+        return deleted ? new ResponseEntity<>("Document has been deleted successfully", HttpStatus.OK)
+                : new ResponseEntity<>("Document not found", HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/email/{email}")
     public ResponseEntity<String> deleteDocumentByEmail(@PathVariable String email) {
         boolean deleted = documentService.deleteDocumentByEmail(email);
-        if (deleted) {
-            return new ResponseEntity<>("Document has been deleted successfully", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Document not found", HttpStatus.NOT_FOUND);
-        }
+        return deleted ? new ResponseEntity<>("Document has been deleted successfully", HttpStatus.OK)
+                : new ResponseEntity<>("Document not found", HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/countByStatus/{status}")

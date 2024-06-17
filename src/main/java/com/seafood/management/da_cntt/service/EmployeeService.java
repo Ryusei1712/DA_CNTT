@@ -1,5 +1,6 @@
 package com.seafood.management.da_cntt.service;
 
+import com.seafood.management.da_cntt.dto.EmployeeDTO;
 import com.seafood.management.da_cntt.model.Employee;
 import com.seafood.management.da_cntt.repository.EmployeeRepository;
 import jakarta.transaction.Transactional;
@@ -8,19 +9,30 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeService {
 
     @Autowired
     private EmployeeRepository employeeRepository;
-
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
+    public EmployeeDTO convertToDTO(Employee employee) {
+        return new EmployeeDTO(employee.getId(), employee.getEmployeeCode(), employee.getEmployeeName(),
+                employee.getEmail(), employee.getPosition(), employee.getStatus());
+    }
+    public EmployeeDTO findEmployeeByCode(String employeeCode) {
+        Optional<Employee> optionalEmployee = employeeRepository.findByEmployeeCode(employeeCode);
+        return optionalEmployee.map(this::convertToDTO).orElse(null);
     }
 
-    public Optional<Employee> getEmployeeById(Long id) {
-        return employeeRepository.findById(id);
+    public List<EmployeeDTO> getAllEmployees() {
+        List<Employee> employees = employeeRepository.findAll();
+        return employees.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    public Optional<EmployeeDTO> getEmployeeById(Long id) {
+        Optional<Employee> employee = employeeRepository.findById(id);
+        return employee.map(this::convertToDTO);
     }
 
     public Optional<Employee> getEmployeeByEmployeeCode(String employeeCode) {
@@ -71,5 +83,6 @@ public class EmployeeService {
     public int countEmployeesByStatus(String status) {
         return employeeRepository.countByStatus(status);
     }
+
 
 }

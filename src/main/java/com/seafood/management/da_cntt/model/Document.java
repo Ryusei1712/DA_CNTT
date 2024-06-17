@@ -18,22 +18,37 @@ public class Document {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "documentType")
+    @Column(name = "document_type")
     private String documentType;
-    @Column(name = "employeeId", nullable = false)
-    private String employeeId;
-    @Column(name = "senderName", nullable = false)
+
+    @ManyToOne
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee employee;
+
+    @Column(name = "sender_name", nullable = false)
     private String senderName;
+
     @Column(name = "email", nullable = false)
     private String email;
+
     @Column(name = "status")
     private String status;
 
-    public Document(String documentType, String employeeId, String senderName, String email, String status) {
+    public Document(String documentType, Employee employee, String senderName, String email, String status) {
         this.documentType = documentType;
-        this.employeeId = employeeId;
+        this.employee = employee;
         this.senderName = senderName;
         this.email = email;
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Document{" +
+                "documentType='" + documentType + '\'' +
+                ", senderName='" + senderName + '\'' +
+                ", email='" + email + '\'' +
+                ", status='" + status + '\'' +
+                '}';
     }
 }

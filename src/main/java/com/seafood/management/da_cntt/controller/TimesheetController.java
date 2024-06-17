@@ -27,11 +27,8 @@ public class TimesheetController {
     @GetMapping("/{id}")
     public ResponseEntity<Timesheet> getTimesheetById(@PathVariable Long id) {
         Optional<Timesheet> timesheet = timesheetService.getTimesheetById(id);
-        if (timesheet.isPresent()) {
-            return new ResponseEntity<>(timesheet.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return timesheet.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/employee/{employeeId}")
@@ -55,20 +52,14 @@ public class TimesheetController {
     @PutMapping("/{id}")
     public ResponseEntity<Timesheet> updateTimesheet(@PathVariable Long id, @RequestBody Timesheet timesheet) {
         Optional<Timesheet> updatedTimesheet = timesheetService.updateTimesheet(id, timesheet);
-        if (updatedTimesheet.isPresent()) {
-            return new ResponseEntity<>(updatedTimesheet.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return updatedTimesheet.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteTimesheet(@PathVariable Long id) {
         boolean deleted = timesheetService.deleteTimesheet(id);
-        if (deleted) {
-            return new ResponseEntity<>("Timesheet has been deleted successfully", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Timesheet not found", HttpStatus.NOT_FOUND);
-        }
+        return deleted ? new ResponseEntity<>("Timesheet has been deleted successfully", HttpStatus.OK)
+                : new ResponseEntity<>("Timesheet not found", HttpStatus.NOT_FOUND);
     }
 }

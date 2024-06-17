@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "leaveRequest")
+@Table(name = "leave_request")
 @NoArgsConstructor
 @AllArgsConstructor
 public class LeaveRequest {
@@ -17,25 +17,43 @@ public class LeaveRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "employeeId", nullable = false)
-    private String employeeId;
-    @Column(name = "employeeName", nullable = false)
+
+    @ManyToOne
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee employee;
+
+    @Column(name = "employee_name", nullable = false)
     private String employeeName;
+
     @Column(name = "email", nullable = false)
     private String email;
+
     @Column(name = "position")
     private String position;
+
     @Column(name = "reason")
     private String reason;
-    @Column(name = "requestType")
+
+    @Column(name = "request_type")
     private String requestType;
 
-    public LeaveRequest(String employeeId, String employeeName, String email, String position, String reason, String requestType) {
-        this.employeeId = employeeId;
+    public LeaveRequest(Employee employee, String employeeName, String email, String position, String reason, String requestType) {
+        this.employee = employee;
         this.employeeName = employeeName;
         this.email = email;
         this.position = position;
         this.reason = reason;
         this.requestType = requestType;
+    }
+
+    @Override
+    public String toString() {
+        return "LeaveRequest{" +
+                "employeeName='" + employeeName + '\'' +
+                ", email='" + email + '\'' +
+                ", position='" + position + '\'' +
+                ", reason='" + reason + '\'' +
+                ", requestType='" + requestType + '\'' +
+                '}';
     }
 }

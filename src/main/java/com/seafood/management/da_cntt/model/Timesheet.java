@@ -20,8 +20,9 @@ public class Timesheet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "employee_id", nullable = false)
-    private String employeeId;
+    @ManyToOne
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee employee;
 
     @Column(name = "date", nullable = false)
     private LocalDate date;
@@ -32,8 +33,8 @@ public class Timesheet {
     @Column(name = "status", nullable = false)
     private String status;
 
-    public Timesheet(String employeeId, LocalDate date, int hoursWorked, String status) {
-        this.employeeId = employeeId;
+    public Timesheet(Employee employee, LocalDate date, int hoursWorked, String status) {
+        this.employee = employee;
         this.date = date;
         this.hoursWorked = hoursWorked;
         this.status = status;
@@ -43,7 +44,6 @@ public class Timesheet {
     public String toString() {
         return "Timesheet{" +
                 "id=" + id +
-                ", employeeId=" + employeeId +
                 ", date=" + date +
                 ", hoursWorked=" + hoursWorked +
                 ", status='" + status + '\'' +

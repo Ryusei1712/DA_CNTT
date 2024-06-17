@@ -38,7 +38,7 @@ public class DocumentService {
         if (existingDocumentOptional.isPresent()) {
             Document existingDocument = existingDocumentOptional.get();
             existingDocument.setDocumentType(document.getDocumentType());
-            existingDocument.setEmployeeId(document.getEmployeeId());
+            existingDocument.setEmployee(document.getEmployee());
             existingDocument.setSenderName(document.getSenderName());
             existingDocument.setEmail(document.getEmail());
             existingDocument.setStatus(document.getStatus());

@@ -26,11 +26,8 @@ public class LeaveRequestController {
     @GetMapping("/{id}")
     public ResponseEntity<LeaveRequest> getLeaveRequestById(@PathVariable Long id) {
         Optional<LeaveRequest> leaveRequest = leaveRequestService.getLeaveRequestById(id);
-        if (leaveRequest.isPresent()) {
-            return new ResponseEntity<>(leaveRequest.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return leaveRequest.map(request -> new ResponseEntity<>(request, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping
@@ -42,21 +39,15 @@ public class LeaveRequestController {
     @PutMapping("/{id}")
     public ResponseEntity<LeaveRequest> updateLeaveRequest(@PathVariable Long id, @RequestBody LeaveRequest leaveRequest) {
         Optional<LeaveRequest> updatedLeaveRequest = leaveRequestService.updateLeaveRequest(id, leaveRequest);
-        if (updatedLeaveRequest.isPresent()) {
-            return new ResponseEntity<>(updatedLeaveRequest.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return updatedLeaveRequest.map(request -> new ResponseEntity<>(request, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping("/id/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteLeaveRequest(@PathVariable Long id) {
         boolean deleted = leaveRequestService.deleteLeaveRequest(id);
-        if (deleted) {
-            return new ResponseEntity<>("Leave request has been deleted successfully", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Leave request not found", HttpStatus.NOT_FOUND);
-        }
+        return deleted ? new ResponseEntity<>("Leave request has been deleted successfully", HttpStatus.OK)
+                : new ResponseEntity<>("Leave request not found", HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/countByRequestType/{requestType}")

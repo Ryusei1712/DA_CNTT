@@ -25,7 +25,7 @@ public class TimesheetService {
     }
 
     public List<Timesheet> getTimesheetsByEmployeeId(String employeeId) {
-        return timesheetRepository.findByEmployeeId(employeeId);
+        return timesheetRepository.findByEmployee_EmployeeCode(employeeId);
     }
 
     public List<Timesheet> getTimesheetsByDateRange(LocalDate startDate, LocalDate endDate) {
@@ -42,7 +42,7 @@ public class TimesheetService {
         Optional<Timesheet> existingTimesheetOptional = timesheetRepository.findById(id);
         if (existingTimesheetOptional.isPresent()) {
             Timesheet existingTimesheet = existingTimesheetOptional.get();
-            existingTimesheet.setEmployeeId(timesheet.getEmployeeId());
+            existingTimesheet.setEmployee(timesheet.getEmployee());
             existingTimesheet.setDate(timesheet.getDate());
             existingTimesheet.setHoursWorked(timesheet.getHoursWorked());
             existingTimesheet.setStatus(timesheet.getStatus());

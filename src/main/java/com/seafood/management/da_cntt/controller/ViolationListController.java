@@ -26,11 +26,8 @@ public class ViolationListController {
     @GetMapping("/{id}")
     public ResponseEntity<ViolationList> getViolationListById(@PathVariable Long id) {
         Optional<ViolationList> violationList = violationListService.getViolationListById(id);
-        if (violationList.isPresent()) {
-            return new ResponseEntity<>(violationList.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return violationList.map(list -> new ResponseEntity<>(list, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping
@@ -42,21 +39,15 @@ public class ViolationListController {
     @PutMapping("/{id}")
     public ResponseEntity<ViolationList> updateViolationList(@PathVariable Long id, @RequestBody ViolationList violationList) {
         Optional<ViolationList> updatedViolationList = violationListService.updateViolationList(id, violationList);
-        if (updatedViolationList.isPresent()) {
-            return new ResponseEntity<>(updatedViolationList.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return updatedViolationList.map(list -> new ResponseEntity<>(list, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping("/id/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteViolationList(@PathVariable Long id) {
         boolean deleted = violationListService.deleteViolationList(id);
-        if (deleted) {
-            return new ResponseEntity<>("Violation list has been deleted successfully", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Violation list not found", HttpStatus.NOT_FOUND);
-        }
+        return deleted ? new ResponseEntity<>("Violation list has been deleted successfully", HttpStatus.OK)
+                : new ResponseEntity<>("Violation list not found", HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/countBySeverity/{severity}")

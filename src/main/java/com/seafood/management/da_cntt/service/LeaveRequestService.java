@@ -37,7 +37,7 @@ public class LeaveRequestService {
         Optional<LeaveRequest> existingLeaveRequestOptional = leaveRequestRepository.findById(id);
         if (existingLeaveRequestOptional.isPresent()) {
             LeaveRequest existingLeaveRequest = existingLeaveRequestOptional.get();
-            existingLeaveRequest.setEmployeeId(leaveRequest.getEmployeeId());
+            existingLeaveRequest.setEmployee(leaveRequest.getEmployee());
             existingLeaveRequest.setEmployeeName(leaveRequest.getEmployeeName());
             existingLeaveRequest.setEmail(leaveRequest.getEmail());
             existingLeaveRequest.setPosition(leaveRequest.getPosition());
