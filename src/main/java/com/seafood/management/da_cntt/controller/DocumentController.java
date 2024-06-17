@@ -1,5 +1,6 @@
 package com.seafood.management.da_cntt.controller;
 
+import com.seafood.management.da_cntt.dto.DocumentDTO;
 import com.seafood.management.da_cntt.model.Document;
 import com.seafood.management.da_cntt.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +19,14 @@ public class DocumentController {
     private DocumentService documentService;
 
     @GetMapping
-    public ResponseEntity<List<Document>> getAllDocuments() {
-        List<Document> documents = documentService.getAllDocuments();
+    public ResponseEntity<List<DocumentDTO>> getAllDocuments() {
+        List<DocumentDTO> documents = documentService.getAllDocuments();
         return new ResponseEntity<>(documents, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Document> getDocumentById(@PathVariable Long id) {
-        Optional<Document> document = documentService.getDocumentById(id);
+    public ResponseEntity<DocumentDTO> getDocumentById(@PathVariable Long id) {
+        Optional<DocumentDTO> document = documentService.getDocumentById(id);
         return document.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }

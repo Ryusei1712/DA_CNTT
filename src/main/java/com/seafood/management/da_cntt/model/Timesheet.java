@@ -1,5 +1,7 @@
 package com.seafood.management.da_cntt.model;
 
+import com.seafood.management.da_cntt.dto.EmployeeDTO;
+import com.seafood.management.da_cntt.dto.TimeSheetDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,6 +41,8 @@ public class Timesheet {
         this.hoursWorked = hoursWorked;
         this.status = status;
     }
+
+
 
     @Override
     public String toString() {

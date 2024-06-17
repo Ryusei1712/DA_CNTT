@@ -1,5 +1,8 @@
 package com.seafood.management.da_cntt.service;
 
+import com.seafood.management.da_cntt.dto.EmployeeDTO;
+import com.seafood.management.da_cntt.dto.ViolationListDTO;
+import com.seafood.management.da_cntt.model.Employee;
 import com.seafood.management.da_cntt.model.ViolationList;
 import com.seafood.management.da_cntt.repository.ViolationListRepository;
 import jakarta.transaction.Transactional;
@@ -8,21 +11,25 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ViolationListService {
 
     @Autowired
     private ViolationListRepository violationListRepository;
-
-    public List<ViolationList> getAllViolationLists() {
-        return violationListRepository.findAll();
+    public ViolationListDTO convertToDTO(ViolationList violationList) {
+        return new ViolationListDTO(violationList.getId(), violationList.getEmployeeName(),
+                violationList.getViolationType(), violationList.getSeverity(), violationList.getStatus());
     }
-
-    public Optional<ViolationList> getViolationListById(Long id) {
-        return violationListRepository.findById(id);
+    public List<ViolationListDTO> getAllViolationLists() {
+        List<ViolationList> violationList = violationListRepository.findAll();
+        return violationList.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
-
+    public Optional<ViolationListDTO> getViolationListById(Long id) {
+        Optional<ViolationList> violationList = violationListRepository.findById(id);
+        return violationList.map(this::convertToDTO);
+    }
     public List<ViolationList> getViolationListByEmployeeId(String employeeId) {
         return violationListRepository.findByEmployee_EmployeeCode(employeeId);
     }

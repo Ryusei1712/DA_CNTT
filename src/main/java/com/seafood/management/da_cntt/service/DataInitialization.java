@@ -1,5 +1,6 @@
 package com.seafood.management.da_cntt.service;
 
+import com.seafood.management.da_cntt.dto.EmployeeDTO;
 import com.seafood.management.da_cntt.model.Document;
 import com.seafood.management.da_cntt.model.Employee;
 import com.seafood.management.da_cntt.model.LeaveRequest;
@@ -112,17 +113,17 @@ public class DataInitialization {
         violationListService.saveViolationList(new ViolationList(emp10, "Lý Thị K", "Gây rối", 1, "Nhắc nhở"));
 
         // Thêm mẫu dữ liệu cho Timesheet
-//        Random random = new Random();
-//        LocalDate startDate = LocalDate.now().minusDays(30);
-//
-//        for (int i = 1; i <= 20; i++) {// số lượng nhân viên
-//            for (int j = 0; j < 5; j++) {// ngày trong tháng
-//                LocalDate randomDate = startDate.plusDays(j);
-//                int hoursWorked = random.nextInt(8) + 1;
-//                String status = random.nextBoolean() ? "Đã chấm công" : "Chưa chấm công";
-//                Employee employee = employeeService.findEmployeeByCode(i < 10 ? "NV00" + i : "NV0" + i);
-//                timesheetService.saveTimesheet(new Timesheet(employee, randomDate, hoursWorked, status));
-//            }
-//        }
+        Random random = new Random();
+        LocalDate startDate = LocalDate.now().minusDays(30);
+
+        for (int i = 1; i <= 20; i++) {// số lượng nhân viên
+            for (int j = 0; j < 1; j++) {// ngày trong tháng
+                LocalDate randomDate = startDate.plusDays(j);
+                int hoursWorked = random.nextInt(8) + 1;
+                String status = random.nextBoolean() ? "Đã chấm công" : "Chưa chấm công";
+                EmployeeDTO employee = employeeService.findEmployeeByCode(i < 10 ? "NV00" + i : "NV0" + i);
+                timesheetService.saveTimesheet(new Timesheet(employeeService.convertToEntity(employee), randomDate, hoursWorked, status));
+            }
+        }
     }
 }

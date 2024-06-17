@@ -1,5 +1,6 @@
 package com.seafood.management.da_cntt.controller;
 
+import com.seafood.management.da_cntt.dto.ViolationListDTO;
 import com.seafood.management.da_cntt.model.ViolationList;
 import com.seafood.management.da_cntt.service.ViolationListService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +19,14 @@ public class ViolationListController {
     private ViolationListService violationListService;
 
     @GetMapping
-    public ResponseEntity<List<ViolationList>> getAllViolationLists() {
-        List<ViolationList> violationLists = violationListService.getAllViolationLists();
+    public ResponseEntity<List<ViolationListDTO>> getAllViolationLists() {
+        List<ViolationListDTO> violationLists = violationListService.getAllViolationLists();
         return new ResponseEntity<>(violationLists, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ViolationList> getViolationListById(@PathVariable Long id) {
-        Optional<ViolationList> violationList = violationListService.getViolationListById(id);
+    public ResponseEntity<ViolationListDTO> getViolationListById(@PathVariable Long id) {
+        Optional<ViolationListDTO> violationList = violationListService.getViolationListById(id);
         return violationList.map(list -> new ResponseEntity<>(list, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }

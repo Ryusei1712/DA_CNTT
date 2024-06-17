@@ -1,6 +1,9 @@
 package com.seafood.management.da_cntt.service;
 
+import com.seafood.management.da_cntt.dto.DocumentDTO;
+import com.seafood.management.da_cntt.dto.EmployeeDTO;
 import com.seafood.management.da_cntt.model.Document;
+import com.seafood.management.da_cntt.model.Employee;
 import com.seafood.management.da_cntt.repository.DocumentRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,23 +11,29 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DocumentService {
 
     @Autowired
     private DocumentRepository documentRepository;
-
-    public List<Document> getAllDocuments() {
-        return documentRepository.findAll();
+    public DocumentDTO convertToDTO(Document document) {
+        return new DocumentDTO(document.getId(), document.getDocumentType(),
+                document.getSenderName(), document.getEmail(), document.getStatus());
     }
 
-    public Optional<Document> getDocumentById(Long id) {
-        return documentRepository.findById(id);
+    public List<DocumentDTO> getAllDocuments() {
+        List<Document> document = documentRepository.findAll();
+        return document.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    public Optional<Document> getDocumentByEmail(String email) {
-        return documentRepository.findByEmail(email);
+    public Optional<DocumentDTO> getDocumentById(Long id) {
+        Optional<Document> document = documentRepository.findById(id);
+        return document.map(this::convertToDTO);
+    }
+    public Optional<DocumentDTO> getDocumentByEmail(String email) {
+        return documentRepository.findByEmail(email).map(this::convertToDTO);
     }
 
     @Transactional

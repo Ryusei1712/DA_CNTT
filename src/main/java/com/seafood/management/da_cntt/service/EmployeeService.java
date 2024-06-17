@@ -20,6 +20,20 @@ public class EmployeeService {
         return new EmployeeDTO(employee.getId(), employee.getEmployeeCode(), employee.getEmployeeName(),
                 employee.getEmail(), employee.getPosition(), employee.getStatus());
     }
+    public Employee convertToEntity(EmployeeDTO employeeDTO) {
+        if (employeeDTO == null) {
+            return null;
+        }
+        Employee employee = new Employee();
+        employee.setId(employeeDTO.getId());
+        employee.setEmployeeCode(employeeDTO.getEmployeeCode());
+        employee.setEmployeeName(employeeDTO.getEmployeeName());
+        employee.setEmail(employeeDTO.getEmail());
+        employee.setPosition(employeeDTO.getPosition());
+        employee.setStatus(employeeDTO.getStatus());
+        return employee;
+    }
+
     public EmployeeDTO findEmployeeByCode(String employeeCode) {
         Optional<Employee> optionalEmployee = employeeRepository.findByEmployeeCode(employeeCode);
         return optionalEmployee.map(this::convertToDTO).orElse(null);

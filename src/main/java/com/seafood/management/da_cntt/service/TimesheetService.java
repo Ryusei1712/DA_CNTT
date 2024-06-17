@@ -1,5 +1,8 @@
 package com.seafood.management.da_cntt.service;
 
+import com.seafood.management.da_cntt.dto.EmployeeDTO;
+import com.seafood.management.da_cntt.dto.TimeSheetDTO;
+import com.seafood.management.da_cntt.model.Employee;
 import com.seafood.management.da_cntt.model.Timesheet;
 import com.seafood.management.da_cntt.repository.TimesheetRepository;
 import jakarta.transaction.Transactional;
@@ -9,21 +12,25 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TimesheetService {
-
     @Autowired
     private TimesheetRepository timesheetRepository;
-
-    public List<Timesheet> getAllTimesheets() {
-        return timesheetRepository.findAll();
+    public TimeSheetDTO convertToDTO(Timesheet timeSheet) {
+        return new TimeSheetDTO(timeSheet.getId(), timeSheet.getDate(),
+                timeSheet.getHoursWorked(), timeSheet.getStatus());
+    }
+    public List<TimeSheetDTO> getAllTimesheets() {
+        List<Timesheet> timeSheet = timesheetRepository.findAll();
+        return timeSheet.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    public Optional<Timesheet> getTimesheetById(Long id) {
-        return timesheetRepository.findById(id);
+    public Optional<TimeSheetDTO> getTimesheetById(Long id) {
+        Optional<Timesheet> timeSheet = timesheetRepository.findById(id);
+        return timeSheet.map(this::convertToDTO);
     }
-
     public List<Timesheet> getTimesheetsByEmployeeId(String employeeId) {
         return timesheetRepository.findByEmployee_EmployeeCode(employeeId);
     }

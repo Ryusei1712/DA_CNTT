@@ -1,5 +1,6 @@
 package com.seafood.management.da_cntt.controller;
 
+import com.seafood.management.da_cntt.dto.TimeSheetDTO;
 import com.seafood.management.da_cntt.model.Timesheet;
 import com.seafood.management.da_cntt.service.TimesheetService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +20,14 @@ public class TimesheetController {
     private TimesheetService timesheetService;
 
     @GetMapping
-    public ResponseEntity<List<Timesheet>> getAllTimesheets() {
-        List<Timesheet> timesheets = timesheetService.getAllTimesheets();
+    public ResponseEntity<List<TimeSheetDTO>> getAllTimesheets() {
+        List<TimeSheetDTO> timesheets = timesheetService.getAllTimesheets();
         return new ResponseEntity<>(timesheets, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Timesheet> getTimesheetById(@PathVariable Long id) {
-        Optional<Timesheet> timesheet = timesheetService.getTimesheetById(id);
+    public ResponseEntity<TimeSheetDTO> getTimesheetById(@PathVariable Long id) {
+        Optional<TimeSheetDTO> timesheet = timesheetService.getTimesheetById(id);
         return timesheet.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }

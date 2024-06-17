@@ -1,5 +1,6 @@
 package com.seafood.management.da_cntt.controller;
 
+import com.seafood.management.da_cntt.dto.LeaveRequestDTO;
 import com.seafood.management.da_cntt.model.LeaveRequest;
 import com.seafood.management.da_cntt.service.LeaveRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +19,14 @@ public class LeaveRequestController {
     private LeaveRequestService leaveRequestService;
 
     @GetMapping
-    public ResponseEntity<List<LeaveRequest>> getAllLeaveRequests() {
-        List<LeaveRequest> leaveRequests = leaveRequestService.getAllLeaveRequests();
+    public ResponseEntity<List<LeaveRequestDTO>> getAllLeaveRequests() {
+        List<LeaveRequestDTO> leaveRequests = leaveRequestService.getAllLeaveRequests();
         return new ResponseEntity<>(leaveRequests, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LeaveRequest> getLeaveRequestById(@PathVariable Long id) {
-        Optional<LeaveRequest> leaveRequest = leaveRequestService.getLeaveRequestById(id);
+    public ResponseEntity<LeaveRequestDTO> getLeaveRequestById(@PathVariable Long id) {
+        Optional<LeaveRequestDTO> leaveRequest = leaveRequestService.getLeaveRequestById(id);
         return leaveRequest.map(request -> new ResponseEntity<>(request, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
