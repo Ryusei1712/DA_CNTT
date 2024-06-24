@@ -38,6 +38,9 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import Collapse from '@mui/material/Collapse';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 import CompanyLogo from './logo.svg';
 
 const drawerWidth = 320;
@@ -161,15 +164,15 @@ function DocumentTable({ documents, handleEdit, handleDelete }) {
                 </TableHead>
                 <TableBody>
                     {documents.map((document) => (
-                        <TableRow key={document.employeeId}>
+                        <TableRow key={document.employeeCode}>
                             <TableCell>{document.documentType}</TableCell>
-                            <TableCell>{document.employeeId}</TableCell>
+                            <TableCell>{document.employeeCode}</TableCell>
                             <TableCell>{document.senderName}</TableCell>
                             <TableCell>{document.email}</TableCell>
                             <TableCell>{document.status}</TableCell>
                             <TableCell>
                                 <Button onClick={() => handleEdit(document)}>Sửa</Button>
-                                <Button onClick={() => handleDelete(document.employeeId)}>Xóa</Button>
+                                <Button onClick={() => handleDelete(document.employeeCode)}>Xóa</Button>
                             </TableCell>
                         </TableRow>
                     ))}
@@ -196,8 +199,8 @@ function LeaveRequestTable({ leaveRequests, handleEdit, handleDelete }) {
                 </TableHead>
                 <TableBody>
                     {leaveRequests.map((request) => (
-                        <TableRow key={request.employeeId}>
-                            <TableCell>{request.employeeId}</TableCell>
+                        <TableRow key={request.employeeCode}>
+                            <TableCell>{request.employeeCode}</TableCell>
                             <TableCell>{request.employeeName}</TableCell>
                             <TableCell>{request.email}</TableCell>
                             <TableCell>{request.position}</TableCell>
@@ -205,7 +208,7 @@ function LeaveRequestTable({ leaveRequests, handleEdit, handleDelete }) {
                             <TableCell>{request.requestType}</TableCell>
                             <TableCell>
                                 <Button onClick={() => handleEdit(request)}>Sửa</Button>
-                                <Button onClick={() => handleDelete(request.employeeId)}>Xóa</Button>
+                                <Button onClick={() => handleDelete(request.employeeCode)}>Xóa</Button>
                             </TableCell>
                         </TableRow>
                     ))}
@@ -231,15 +234,15 @@ function ViolationTable({ violations, handleEdit, handleDelete }) {
                 </TableHead>
                 <TableBody>
                     {violations.map((violation) => (
-                        <TableRow key={violation.employeeId}>
-                            <TableCell>{violation.employeeId}</TableCell>
+                        <TableRow key={violation.employeeCode}>
+                            <TableCell>{violation.employeeCode}</TableCell>
                             <TableCell>{violation.employeeName}</TableCell>
                             <TableCell>{violation.violationType}</TableCell>
                             <TableCell>{violation.severity}</TableCell>
                             <TableCell>{violation.status}</TableCell>
                             <TableCell>
                                 <Button onClick={() => handleEdit(violation)}>Sửa</Button>
-                                <Button onClick={() => handleDelete(violation.employeeId)}>Xóa</Button>
+                                <Button onClick={() => handleDelete(violation.employeeCode)}>Xóa</Button>
                             </TableCell>
                         </TableRow>
                     ))}
@@ -264,14 +267,14 @@ function TimesheetTable({ timesheets, handleEdit, handleDelete }) {
                 </TableHead>
                 <TableBody>
                     {timesheets.map((timesheet) => (
-                        <TableRow key={timesheet.employeeId}>
-                            <TableCell>{timesheet.employeeId}</TableCell>
+                        <TableRow key={timesheet.employeeCode}>
+                            <TableCell>{timesheet.employeeCode}</TableCell>
                             <TableCell>{timesheet.date}</TableCell>
                             <TableCell>{timesheet.hoursWorked}</TableCell>
                             <TableCell>{timesheet.status}</TableCell>
                             <TableCell>
                                 <Button onClick={() => handleEdit(timesheet)}>Sửa</Button>
-                                <Button onClick={() => handleDelete(timesheet.employeeId)}>Xóa</Button>
+                                <Button onClick={() => handleDelete(timesheet.employeeCode)}>Xóa</Button>
                             </TableCell>
                         </TableRow>
                     ))}
@@ -288,9 +291,11 @@ export default function MiniDrawer() {
     const [violations, setViolations] = useState([]);
     const [timesheets, setTimesheets] = useState([]);
     const [searchKeyword, setSearchKeyword] = useState('');
-    const [selectedMenu, setSelectedMenu] = useState('Quản lý nhân sự');
+
     const theme = useTheme();
     const [open, setOpen] = useState(false);
+    const [selectedMenu, setSelectedMenu] = useState('');
+    const [openSubmenu, setOpenSubmenu] = useState(false);
 
     // State and handlers for dialog
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -304,13 +309,13 @@ export default function MiniDrawer() {
     });
     const [documentInfo, setDocumentInfo] = useState({
         documentType: '',
-        employeeId: '',
+        employeeCode: '',
         senderName: '',
         email: '',
         status: ''
     });
     const [leaveRequestInfo, setLeaveRequestInfo] = useState({
-        employeeId: '',
+        employeeCode: '',
         employeeName: '',
         email: '',
         position: '',
@@ -318,14 +323,14 @@ export default function MiniDrawer() {
         requestType: ''
     });
     const [violationInfo, setViolationInfo] = useState({
-        employeeId: '',
+        employeeCode: '',
         employeeName: '',
         violationType: '',
         severity: '',
         status: ''
     });
     const [timesheetInfo, setTimesheetInfo] = useState({
-        employeeId: '',
+        employeeCode: '',
         date: '',
         hoursWorked: '',
         status: ''
@@ -334,17 +339,14 @@ export default function MiniDrawer() {
     const [snackbarMessage, setSnackbarMessage] = useState('');
 
     useEffect(() => {
-        /* 
-        // 16/4: Lấy dữ liệu nhân viên từ API 
+        // 16/4: Lấy dữ liệu nhân viên từ API
         fetch('api/employees')
             .then(response => response.json())
             .then(data => setEmployees(data))
             .catch(error => console.error('Lỗi khi lấy dữ liệu nhân viên:', error));
-        */
     }, []);
 
     const handleSubmenuClick = (submenu) => {
-        /*
         // 16/4: Lấy dữ liệu chứng từ từ API
         if (submenu.title === 'Duyệt chứng từ') {
             fetch('api/documents')
@@ -353,7 +355,7 @@ export default function MiniDrawer() {
                     setDocuments(data);
                 })
                 .catch(error => console.error('Lỗi khi lấy dữ liệu chứng từ:', error));
-        } 
+        }
         // 16/4: Lấy dữ liệu đơn nghỉ từ API
         else if (submenu.title === 'Đơn nghỉ') {
             fetch('api/leaveRequests')
@@ -362,7 +364,7 @@ export default function MiniDrawer() {
                     setLeaveRequests(data);
                 })
                 .catch(error => console.error('Lỗi khi lấy dữ liệu đơn nghỉ:', error));
-        } 
+        }
         // 16/4: Lấy dữ liệu vi phạm từ API
         else if (submenu.title === 'Vi phạm') {
             fetch('api/violationLists')
@@ -371,18 +373,30 @@ export default function MiniDrawer() {
                     setViolations(data);
                 })
                 .catch(error => console.error('Lỗi khi lấy dữ liệu vi phạm:', error));
-        } 
+        }
         // 16/4: Lấy dữ liệu bảng chấm công từ API
         else if (submenu.title === 'Bảng chấm công') {
             fetch('api/timesheets')
                 .then(response => response.json())
                 .then(data => {
+                    console.log('Dữ liệu bảng chấm công:', data);
                     setTimesheets(data);
                 })
                 .catch(error => console.error('Lỗi khi lấy dữ liệu bảng chấm công:', error));
         }
-        */
         setSelectedMenu(submenu.title);
+    };
+
+    const handleMenuClick = (menuItem) => {
+        if (menuItem.title === selectedMenu && openSubmenu) {
+            setOpenSubmenu(false);
+        } else if (menuItem.submenus) {
+            setSelectedMenu(menuItem.title);
+            setOpenSubmenu(true);
+        } else {
+            setSelectedMenu(menuItem.title);
+            setOpenSubmenu(false);
+        }
     };
 
     const menuItems = [
@@ -457,7 +471,6 @@ export default function MiniDrawer() {
     };
 
     const handleConfirmAdd = () => {
-        /*
         let url = '';
         let data = {};
         switch (dialogType) {
@@ -527,11 +540,9 @@ export default function MiniDrawer() {
                 setSnackbarMessage('Lỗi khi thêm');
                 setSnackbarOpen(true);
             });
-        */
     };
 
     const handleDelete = (type, id) => {
-        /*
         let url = '';
         switch (type) {
             case 'employee':
@@ -563,16 +574,16 @@ export default function MiniDrawer() {
                             setEmployees(employees.filter(emp => emp.employeeCode !== id));
                             break;
                         case 'document':
-                            setDocuments(documents.filter(doc => doc.employeeId !== id));
+                            setDocuments(documents.filter(doc => doc.id !== id));
                             break;
                         case 'leaveRequest':
-                            setLeaveRequests(leaveRequests.filter(req => req.employeeId !== id));
+                            setLeaveRequests(leaveRequests.filter(req => req.id !== id));
                             break;
                         case 'violation':
-                            setViolations(violations.filter(vio => vio.employeeId !== id));
+                            setViolations(violations.filter(vio => vio.id !== id));
                             break;
                         case 'timesheet':
-                            setTimesheets(timesheets.filter(ts => ts.employeeId !== id));
+                            setTimesheets(timesheets.filter(ts => ts.id !== id));
                             break;
                         default:
                             break;
@@ -580,7 +591,6 @@ export default function MiniDrawer() {
                 }
             })
             .catch(error => console.error('Lỗi khi xóa:', error));
-        */
     };
 
     const handleEdit = (type, item) => {
@@ -610,7 +620,7 @@ export default function MiniDrawer() {
     );
 
     const filteredTimesheets = timesheets.filter(timesheet =>
-        timesheet.employeeId.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        timesheet.employeeCode.toLowerCase().includes(searchKeyword.toLowerCase()) ||
         timesheet.date.toLowerCase().includes(searchKeyword.toLowerCase()) ||
         timesheet.status.toLowerCase().includes(searchKeyword.toLowerCase())
     );
@@ -659,7 +669,7 @@ export default function MiniDrawer() {
                                         justifyContent: open ? 'initial' : 'center',
                                         px: 2.5,
                                     }}
-                                    onClick={() => setSelectedMenu(menuItem.title)}
+                                    onClick={() => handleMenuClick(menuItem)}
                                 >
                                     <ListItemIcon
                                         sx={{
@@ -671,17 +681,20 @@ export default function MiniDrawer() {
                                         {menuItem.icon}
                                     </ListItemIcon>
                                     <ListItemText primary={menuItem.title} sx={{ opacity: open ? 1 : 0 }} />
+                                    {menuItem.submenus && (selectedMenu === menuItem.title ? (openSubmenu ? <ExpandLess /> : <ExpandMore />) : null)}
                                 </ListItemButton>
+                                {menuItem.submenus && (
+                                    <Collapse in={openSubmenu && selectedMenu === menuItem.title} timeout="auto" unmountOnExit>
+                                        <List component="div" disablePadding>
+                                            {menuItem.submenus.map((submenu) => (
+                                                <ListItemButton key={submenu.title} onClick={() => handleSubmenuClick(submenu)} sx={{ pl: 4 }}>
+                                                    <ListItemText primary={submenu.title} />
+                                                </ListItemButton>
+                                            ))}
+                                        </List>
+                                    </Collapse>
+                                )}
                             </ListItem>
-                            {menuItem.submenus && selectedMenu === menuItem.title && (
-                                <List>
-                                    {menuItem.submenus.map((submenu) => (
-                                        <ListItemButton key={submenu.title} onClick={() => handleSubmenuClick(submenu)}>
-                                            <ListItemText primary={submenu.title} />
-                                        </ListItemButton>
-                                    ))}
-                                </List>
-                            )}
                         </div>
                     ))}
                 </List>
@@ -816,7 +829,7 @@ export default function MiniDrawer() {
                                 label="Mã nhân viên"
                                 type="text"
                                 fullWidth
-                                value={documentInfo.employeeId}
+                                value={documentInfo.employeeCode}
                                 onChange={handleInputChange}
                             />
                             <TextField
@@ -861,7 +874,7 @@ export default function MiniDrawer() {
                                 label="Mã nhân viên"
                                 type="text"
                                 fullWidth
-                                value={leaveRequestInfo.employeeId}
+                                value={leaveRequestInfo.employeeCode}
                                 onChange={handleInputChange}
                             />
                             <TextField
@@ -926,7 +939,7 @@ export default function MiniDrawer() {
                                 label="Mã nhân viên"
                                 type="text"
                                 fullWidth
-                                value={violationInfo.employeeId}
+                                value={violationInfo.employeeCode}
                                 onChange={handleInputChange}
                             />
                             <TextField
@@ -976,12 +989,13 @@ export default function MiniDrawer() {
                             <TextField
                                 autoFocus
                                 margin="dense"
-                                id="employeeId"
-                                name="employeeId"
+                                id="employeeCode"
+                                name="employeeCode"
                                 label="Mã nhân viên"
                                 type="text"
                                 fullWidth
-                                value={timesheetInfo.employeeId}
+                                value={timesheetInfo.employeeCode}
+
                                 onChange={handleInputChange}
                             />
                             <TextField
