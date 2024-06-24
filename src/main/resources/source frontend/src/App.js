@@ -42,7 +42,8 @@ import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import CompanyLogo from './logo.svg';
-
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 const drawerWidth = 320;
 
 const openedMixin = (theme) => ({
@@ -137,8 +138,12 @@ function EmployeeTable({ employees, handleEdit, handleDelete }) {
                             <TableCell>{employee.position}</TableCell>
                             <TableCell>{employee.status}</TableCell>
                             <TableCell>
-                                <Button onClick={() => handleEdit(employee)}>Sửa</Button>
-                                <Button onClick={() => handleDelete(employee.employeeCode)}>Xóa</Button>
+                                <Button onClick={() => handleEdit(employee)}>
+                                    <EditIcon />
+                                </Button>
+                                <Button onClick={() => handleDelete(employee.employeeCode)}>
+                                    <DeleteIcon />
+                                </Button>
                             </TableCell>
                         </TableRow>
                     ))}
@@ -171,8 +176,12 @@ function DocumentTable({ documents, handleEdit, handleDelete }) {
                             <TableCell>{document.email}</TableCell>
                             <TableCell>{document.status}</TableCell>
                             <TableCell>
-                                <Button onClick={() => handleEdit(document)}>Sửa</Button>
-                                <Button onClick={() => handleDelete(document.employeeCode)}>Xóa</Button>
+                                <Button onClick={() => handleEdit(document)}>
+                                    <EditIcon />
+                                </Button>
+                                <Button onClick={() => handleDelete(document.employeeCode)}>
+                                    <DeleteIcon />
+                                </Button>
                             </TableCell>
                         </TableRow>
                     ))}
@@ -207,8 +216,12 @@ function LeaveRequestTable({ leaveRequests, handleEdit, handleDelete }) {
                             <TableCell>{request.reason}</TableCell>
                             <TableCell>{request.requestType}</TableCell>
                             <TableCell>
-                                <Button onClick={() => handleEdit(request)}>Sửa</Button>
-                                <Button onClick={() => handleDelete(request.employeeCode)}>Xóa</Button>
+                                <Button onClick={() => handleEdit(request)}>
+                                    <EditIcon />
+                                </Button>
+                                <Button onClick={() => handleDelete(request.employeeCode)}>
+                                    <DeleteIcon />
+                                </Button>
                             </TableCell>
                         </TableRow>
                     ))}
@@ -241,8 +254,12 @@ function ViolationTable({ violations, handleEdit, handleDelete }) {
                             <TableCell>{violation.severity}</TableCell>
                             <TableCell>{violation.status}</TableCell>
                             <TableCell>
-                                <Button onClick={() => handleEdit(violation)}>Sửa</Button>
-                                <Button onClick={() => handleDelete(violation.employeeCode)}>Xóa</Button>
+                                <Button onClick={() => handleEdit(violation)}>
+                                    <EditIcon />
+                                </Button>
+                                <Button onClick={() => handleDelete(violation.employeeCode)}>
+                                    <DeleteIcon />
+                                </Button>
                             </TableCell>
                         </TableRow>
                     ))}
@@ -273,8 +290,12 @@ function TimesheetTable({ timesheets, handleEdit, handleDelete }) {
                             <TableCell>{timesheet.hoursWorked}</TableCell>
                             <TableCell>{timesheet.status}</TableCell>
                             <TableCell>
-                                <Button onClick={() => handleEdit(timesheet)}>Sửa</Button>
-                                <Button onClick={() => handleDelete(timesheet.employeeCode)}>Xóa</Button>
+                                <Button onClick={() => handleEdit(timesheet)}>
+                                    <EditIcon />
+                                </Button>
+                                <Button onClick={() => handleDelete(timesheet.employeeCode)}>
+                                    <DeleteIcon />
+                                </Button>
                             </TableCell>
                         </TableRow>
                     ))}

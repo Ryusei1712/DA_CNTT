@@ -1,3 +1,5 @@
-fix phần hình ảnh ở sign in
-fix submenu đóng lại khi chuyển đổi qua lại
-thêm bảng chỉnh sửa tương tác với button chỉnh sửa
+hiển thị button xóa sửa
+api chức năng xóa sửa
+bảng sửa tuương ứng với nhân viên
+
+chỉnh lại bảng thêm như trong component
