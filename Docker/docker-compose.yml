@@ -1,9 +1,27 @@
-version: '3.8'
+version: '3.9'
 services:
-  seafoodManagement:
+  seafoodmanagement:
     image: mysql:latest
     environment:
       - MYSQL_DATABASE=Seafood_Product_Management
       - MYSQL_ROOT_PASSWORD=seafood123
     ports:
       - '3306:3306'
+    volumes:
+      - db_data:/var/lib/mysql
+
+  seafoodapp:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - '8080:8080'
+    depends_on:
+      - seafoodmanagement
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://seafoodmanagement:3306/Seafood_Product_Management
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: seafood123
+
+volumes:
+  db_data:

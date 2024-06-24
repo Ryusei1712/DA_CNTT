@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Main-Class: com.seafood.management.da_cntt.DaCnttApplication
+

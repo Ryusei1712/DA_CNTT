@@ -12,16 +12,16 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 public class TimeSheetDTO {
-    private Long id;
+    private String employeeCode;
 
-    private LocalDate date;
+    private String date;
 
     private int hoursWorked;
 
     private String status;
 
-    public TimeSheetDTO(Long id, LocalDate date, int hoursWorked, String status) {
-        this.id = id;
+    public TimeSheetDTO(String employeeCode, String date, int hoursWorked, String status) {
+        this.employeeCode = employeeCode;
         this.date = date;
         this.hoursWorked = hoursWorked;
         this.status = status;

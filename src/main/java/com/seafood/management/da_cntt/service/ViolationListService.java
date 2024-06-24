@@ -19,7 +19,7 @@ public class ViolationListService {
     @Autowired
     private ViolationListRepository violationListRepository;
     public ViolationListDTO convertToDTO(ViolationList violationList) {
-        return new ViolationListDTO(violationList.getId(), violationList.getEmployeeName(),
+        return new ViolationListDTO(violationList.getEmployee().getEmployeeCode(), violationList.getEmployeeName(),
                 violationList.getViolationType(), violationList.getSeverity(), violationList.getStatus());
     }
     public List<ViolationListDTO> getAllViolationLists() {

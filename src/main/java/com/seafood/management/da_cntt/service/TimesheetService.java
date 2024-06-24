@@ -19,7 +19,7 @@ public class TimesheetService {
     @Autowired
     private TimesheetRepository timesheetRepository;
     public TimeSheetDTO convertToDTO(Timesheet timeSheet) {
-        return new TimeSheetDTO(timeSheet.getId(), timeSheet.getDate(),
+        return new TimeSheetDTO(timeSheet.getEmployee().getEmployeeCode(), timeSheet.getDate().toString(),
                 timeSheet.getHoursWorked(), timeSheet.getStatus());
     }
     public List<TimeSheetDTO> getAllTimesheets() {

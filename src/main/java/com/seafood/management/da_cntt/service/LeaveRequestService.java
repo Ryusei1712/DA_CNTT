@@ -31,7 +31,7 @@ public class LeaveRequestService {
     @Autowired
     private LeaveRequestRepository leaveRequestRepository;
     public LeaveRequestDTO convertToDTO(LeaveRequest leaveRequest) {
-        return new LeaveRequestDTO(leaveRequest.getId(), leaveRequest.getEmployeeName(),
+        return new LeaveRequestDTO(leaveRequest.getEmployee().getEmployeeCode(), leaveRequest.getEmployeeName(),
                 leaveRequest.getEmail(),leaveRequest.getPosition(),leaveRequest.getReason(),leaveRequest.getRequestType());
     }
 

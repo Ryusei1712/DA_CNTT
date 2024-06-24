@@ -19,7 +19,7 @@ public class DocumentService {
     @Autowired
     private DocumentRepository documentRepository;
     public DocumentDTO convertToDTO(Document document) {
-        return new DocumentDTO(document.getId(), document.getDocumentType(),
+        return new DocumentDTO(document.getEmployee().getEmployeeCode(), document.getDocumentType(),
                 document.getSenderName(), document.getEmail(), document.getStatus());
     }
 
