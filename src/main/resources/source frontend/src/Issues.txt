@@ -1,5 +1,4 @@
-hiển thị button xóa sửa
-api chức năng xóa sửa
-bảng sửa tuương ứng với nhân viên
-
+api chức năng sửa
+bảng sửa tương ứng với nhân viên
 chỉnh lại bảng thêm như trong component
+

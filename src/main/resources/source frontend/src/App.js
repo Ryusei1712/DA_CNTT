@@ -247,7 +247,7 @@ function ViolationTable({ violations, handleEdit, handleDelete }) {
                 </TableHead>
                 <TableBody>
                     {violations.map((violation) => (
-                        <TableRow key={violation.employeeCode}>
+                        <TableRow key={violation.id}>
                             <TableCell>{violation.employeeCode}</TableCell>
                             <TableCell>{violation.employeeName}</TableCell>
                             <TableCell>{violation.violationType}</TableCell>
@@ -257,7 +257,7 @@ function ViolationTable({ violations, handleEdit, handleDelete }) {
                                 <Button onClick={() => handleEdit(violation)}>
                                     <EditIcon />
                                 </Button>
-                                <Button onClick={() => handleDelete(violation.employeeCode)}>
+                                <Button onClick={() => handleDelete(violation.id)}>
                                     <DeleteIcon />
                                 </Button>
                             </TableCell>
@@ -284,7 +284,7 @@ function TimesheetTable({ timesheets, handleEdit, handleDelete }) {
                 </TableHead>
                 <TableBody>
                     {timesheets.map((timesheet) => (
-                        <TableRow key={timesheet.employeeCode}>
+                        <TableRow key={timesheet.id}>
                             <TableCell>{timesheet.employeeCode}</TableCell>
                             <TableCell>{timesheet.date}</TableCell>
                             <TableCell>{timesheet.hoursWorked}</TableCell>
@@ -293,7 +293,7 @@ function TimesheetTable({ timesheets, handleEdit, handleDelete }) {
                                 <Button onClick={() => handleEdit(timesheet)}>
                                     <EditIcon />
                                 </Button>
-                                <Button onClick={() => handleDelete(timesheet.employeeCode)}>
+                                <Button onClick={() => handleDelete(timesheet.id)}>
                                     <DeleteIcon />
                                 </Button>
                             </TableCell>
@@ -344,6 +344,7 @@ export default function MiniDrawer() {
         requestType: ''
     });
     const [violationInfo, setViolationInfo] = useState({
+        id: '',
         employeeCode: '',
         employeeName: '',
         violationType: '',
@@ -351,6 +352,7 @@ export default function MiniDrawer() {
         status: ''
     });
     const [timesheetInfo, setTimesheetInfo] = useState({
+        id: '',
         employeeCode: '',
         date: '',
         hoursWorked: '',
@@ -366,44 +368,51 @@ export default function MiniDrawer() {
             .then(data => setEmployees(data))
             .catch(error => console.error('Lỗi khi lấy dữ liệu nhân viên:', error));
     }, []);
-
+    const fetchEmployees = () => {
+        fetch('api/employees')
+            .then(response => response.json())
+            .then(data => setEmployees(data))
+            .catch(error => console.error('Lỗi khi lấy dữ liệu nhân viên:', error));
+    };
+    const fetchTimesheets = () => {
+        fetch('api/timesheets')
+            .then(response => response.json())
+            .then(data => {setTimesheets(data);})
+            .catch(error => console.error('Lỗi khi lấy dữ liệu bảng chấm công:', error));
+    };
+    const fetchDocuments = () => {
+        fetch('api/documents')
+            .then(response => response.json())
+            .then(data => {
+                setDocuments(data);
+            })
+            .catch(error => console.error('Lỗi khi lấy dữ liệu chứng từ:', error));
+    };
+    const fetchLeaveRequests = () => {
+        fetch('api/leaveRequests')
+            .then(response => response.json())
+            .then(data => {
+                setLeaveRequests(data);
+            })
+            .catch(error => console.error('Lỗi khi lấy dữ liệu đơn nghỉ:', error));
+    };
+    const  fetchViolations = () => {
+        fetch('api/violationLists')
+            .then(response => response.json())
+            .then(data => {
+                setViolations(data);
+            })
+            .catch(error => console.error('Lỗi khi lấy dữ liệu vi phạm:', error));
+    };
     const handleSubmenuClick = (submenu) => {
-        // 16/4: Lấy dữ liệu chứng từ từ API
         if (submenu.title === 'Duyệt chứng từ') {
-            fetch('api/documents')
-                .then(response => response.json())
-                .then(data => {
-                    setDocuments(data);
-                })
-                .catch(error => console.error('Lỗi khi lấy dữ liệu chứng từ:', error));
-        }
-        // 16/4: Lấy dữ liệu đơn nghỉ từ API
-        else if (submenu.title === 'Đơn nghỉ') {
-            fetch('api/leaveRequests')
-                .then(response => response.json())
-                .then(data => {
-                    setLeaveRequests(data);
-                })
-                .catch(error => console.error('Lỗi khi lấy dữ liệu đơn nghỉ:', error));
-        }
-        // 16/4: Lấy dữ liệu vi phạm từ API
-        else if (submenu.title === 'Vi phạm') {
-            fetch('api/violationLists')
-                .then(response => response.json())
-                .then(data => {
-                    setViolations(data);
-                })
-                .catch(error => console.error('Lỗi khi lấy dữ liệu vi phạm:', error));
-        }
-        // 16/4: Lấy dữ liệu bảng chấm công từ API
-        else if (submenu.title === 'Bảng chấm công') {
-            fetch('api/timesheets')
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Dữ liệu bảng chấm công:', data);
-                    setTimesheets(data);
-                })
-                .catch(error => console.error('Lỗi khi lấy dữ liệu bảng chấm công:', error));
+            fetchDocuments();
+        }else if (submenu.title === 'Đơn nghỉ') {
+            fetchLeaveRequests();
+        }else if (submenu.title === 'Vi phạm') {
+            fetchViolations();
+        }else if (submenu.title === 'Bảng chấm công') {
+            fetchTimesheets();
         }
         setSelectedMenu(submenu.title);
     };
@@ -576,7 +585,7 @@ export default function MiniDrawer() {
                 url = `api/leaveRequests/${id}`;
                 break;
             case 'violation':
-                url = `api/violations/${id}`;
+                url = `api/violationLists/${id}`;
                 break;
             case 'timesheet':
                 url = `api/timesheets/${id}`;
@@ -593,18 +602,23 @@ export default function MiniDrawer() {
                     switch (type) {
                         case 'employee':
                             setEmployees(employees.filter(emp => emp.employeeCode !== id));
+                            fetchEmployees();
                             break;
                         case 'document':
                             setDocuments(documents.filter(doc => doc.id !== id));
+                            fetchDocuments();
                             break;
                         case 'leaveRequest':
                             setLeaveRequests(leaveRequests.filter(req => req.id !== id));
+                            fetchLeaveRequests();
                             break;
                         case 'violation':
                             setViolations(violations.filter(vio => vio.id !== id));
+                            fetchViolations();
                             break;
                         case 'timesheet':
                             setTimesheets(timesheets.filter(ts => ts.id !== id));
+                            fetchTimesheets();
                             break;
                         default:
                             break;
@@ -612,6 +626,8 @@ export default function MiniDrawer() {
                 }
             })
             .catch(error => console.error('Lỗi khi xóa:', error));
+        setSnackbarMessage('Xóa thành công');
+        setSnackbarOpen(true);
     };
 
     const handleEdit = (type, item) => {
