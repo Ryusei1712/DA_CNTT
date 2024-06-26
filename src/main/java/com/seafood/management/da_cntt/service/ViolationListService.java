@@ -3,12 +3,17 @@ package com.seafood.management.da_cntt.service;
 import com.seafood.management.da_cntt.dto.EmployeeDTO;
 import com.seafood.management.da_cntt.dto.ViolationListDTO;
 import com.seafood.management.da_cntt.model.Employee;
+import com.seafood.management.da_cntt.model.Timesheet;
 import com.seafood.management.da_cntt.model.ViolationList;
 import com.seafood.management.da_cntt.repository.ViolationListRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,7 +24,7 @@ public class ViolationListService {
     @Autowired
     private ViolationListRepository violationListRepository;
     public ViolationListDTO convertToDTO(ViolationList violationList) {
-        return new ViolationListDTO(violationList.getEmployee().getEmployeeCode(), violationList.getEmployeeName(),
+        return new ViolationListDTO(violationList.getId(), violationList.getEmployee().getEmployeeCode(), violationList.getEmployeeName(),
                 violationList.getViolationType(), violationList.getSeverity(), violationList.getStatus());
     }
     public List<ViolationListDTO> getAllViolationLists() {
@@ -59,17 +64,45 @@ public class ViolationListService {
     public boolean deleteViolationList(Long id) {
         Optional<ViolationList> violationListOptional = violationListRepository.findById(id);
         if (violationListOptional.isPresent()) {
+            ViolationList violationList = violationListOptional.get();
+            backupViolationListsInfo(violationList);
             violationListRepository.deleteById(id);
             return true;
         }
         return false;
     }
-
+    @Transactional
+    public boolean deleteViolationListByEmployeeCode(String employeeCode) {
+        List<ViolationList> violationLists = violationListRepository.findByEmployee_EmployeeCode(employeeCode);
+        if (!violationLists.isEmpty()) {
+            violationListRepository.deleteByEmployeeCode(employeeCode);
+            return true;
+        }
+        return false;
+    }
     public int countViolationListsBySeverity(int severity) {
         return violationListRepository.countBySeverity(severity);
     }
 
     public int countViolationListsByStatus(String status) {
         return violationListRepository.countByStatus(status);
+    }
+
+    private void backupViolationListsInfo(ViolationList violationLists) {
+        String violationListsInfo = violationLists.toString();
+        String backupDirectoryPath = "backup/violationLists"; // Specify your backup directory here
+        String backupFilePath = backupDirectoryPath + "/" + violationLists.getEmployeeName()  + ".txt";
+
+        // Create the backup directory if it doesn't exist
+        File backupDirectory = new File(backupDirectoryPath);
+        if (!backupDirectory.exists()) {
+            backupDirectory.mkdirs();
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(backupFilePath))) {
+            writer.write(violationListsInfo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

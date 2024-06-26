@@ -44,11 +44,12 @@ public class Document {
 
     @Override
     public String toString() {
-        return "Document{" +
-                "documentType='" + documentType + '\'' +
-                ", senderName='" + senderName + '\'' +
-                ", email='" + email + '\'' +
-                ", status='" + status + '\'' +
-                '}';
+        return
+                "id=" + id +
+                ", documentType=" + documentType  +
+                ", senderName=" + senderName  +
+                ", email=" + email  +
+                ", status=" + status  +
+                '\n';
     }
 }

@@ -45,8 +45,8 @@ public class LeaveRequestController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteLeaveRequest(@PathVariable Long id) {
-        boolean deleted = leaveRequestService.deleteLeaveRequest(id);
+    public ResponseEntity<String> deleteLeaveRequestByEmployeeCode(@PathVariable String id) {
+        boolean deleted = leaveRequestService.deleteLeaveRequestByEmployeeCode(id);
         return deleted ? new ResponseEntity<>("Leave request has been deleted successfully", HttpStatus.OK)
                 : new ResponseEntity<>("Leave request not found", HttpStatus.NOT_FOUND);
     }

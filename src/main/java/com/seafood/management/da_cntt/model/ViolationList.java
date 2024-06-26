@@ -44,11 +44,12 @@ public class ViolationList {
 
     @Override
     public String toString() {
-        return "ViolationList{" +
-                "employeeName='" + employeeName + '\'' +
-                ", violationType='" + violationType + '\'' +
+        return
+                "id=" + id +
+                ", employeeName=" + employeeName  +
+                ", violationType=" + violationType  +
                 ", severity=" + severity +
-                ", status='" + status + '\'' +
-                '}';
+                ", status=" + status+
+                '\n';
     }
 }

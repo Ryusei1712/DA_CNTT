@@ -46,15 +46,8 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteEmployee(@PathVariable Long id) {
-        boolean deleted = employeeService.deleteEmployee(id);
-        return deleted ? new ResponseEntity<>("Employee has been deleted successfully", HttpStatus.OK)
-                : new ResponseEntity<>("Employee not found", HttpStatus.NOT_FOUND);
-    }
-
-    @DeleteMapping("/code/{employeeCode}")
-    public ResponseEntity<String> deleteEmployeeByCode(@PathVariable String employeeCode) {
-        boolean deleted = employeeService.deleteEmployeeByCode(employeeCode);
+    public ResponseEntity<String> deleteEmployeeByCode(@PathVariable String id) {
+        boolean deleted = employeeService.deleteEmployeeByCode(id);
         return deleted ? new ResponseEntity<>("Employee has been deleted successfully", HttpStatus.OK)
                 : new ResponseEntity<>("Employee not found", HttpStatus.NOT_FOUND);
     }

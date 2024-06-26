@@ -43,14 +43,13 @@ public class Timesheet {
     }
 
 
-
     @Override
     public String toString() {
-        return "Timesheet{" +
+        return
                 "id=" + id +
                 ", date=" + date +
                 ", hoursWorked=" + hoursWorked +
-                ", status='" + status + '\'' +
-                '}';
+                ", status=" + status +
+                '\n';
     }
 }

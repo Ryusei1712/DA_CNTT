@@ -10,6 +10,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ViolationListDTO {
+    private  Long id;
+
     private String employeeCode;
 
     private String employeeName;
@@ -20,11 +22,13 @@ public class ViolationListDTO {
 
     private String status;
 
-    public ViolationListDTO(String employeeCode, String employeeName, String violationType, int severity, String status) {
+    public ViolationListDTO(Long id, String employeeCode, String employeeName, String violationType, int severity, String status) {
+        this.id = id;
         this.employeeCode = employeeCode;
         this.employeeName = employeeName;
         this.violationType = violationType;
         this.severity = severity;
         this.status = status;
     }
+
 }

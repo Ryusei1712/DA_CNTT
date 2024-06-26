@@ -7,6 +7,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -88,6 +92,8 @@ public class EmployeeService {
     public boolean deleteEmployeeByCode(String employeeCode) {
         Optional<Employee> employeeOptional = employeeRepository.findByEmployeeCode(employeeCode);
         if (employeeOptional.isPresent()) {
+            Employee employee = employeeOptional.get();
+            backupEmployeeInfo(employee);
             employeeRepository.deleteByEmployeeCode(employeeCode);
             return true;
         }
@@ -98,5 +104,21 @@ public class EmployeeService {
         return employeeRepository.countByStatus(status);
     }
 
+    private void backupEmployeeInfo(Employee employee) {
+        String employeeInfo = employee.toString();
+        String backupDirectoryPath = "backup/employee"; // Specify your backup directory here
+        String backupFilePath = backupDirectoryPath + "/" + employee.getEmployeeCode() + ".txt";
 
+        // Create the backup directory if it doesn't exist
+        File backupDirectory = new File(backupDirectoryPath);
+        if (!backupDirectory.exists()) {
+            backupDirectory.mkdirs();
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(backupFilePath))) {
+            writer.write(employeeInfo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

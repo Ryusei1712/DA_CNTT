@@ -58,11 +58,16 @@ public class Employee {
     @Override
     public String toString() {
         return "Employee{" +
-                "employeeCode='" + employeeCode + '\'' +
-                ", employeeName='" + employeeName + '\'' +
-                ", email='" + email + '\'' +
-                ", position='" + position + '\'' +
-                ", status='" + status + '\'' +
+                "id=" + id +
+                ", employeeCode=" + employeeCode + '\n' +
+                "employeeName=" + employeeName + '\n' +
+                "email=" + email + '\n' +
+                "position=" + position + '\n' +
+                "status=" + status + '\n' +
+                "DOCUMENTS:" + '\n' + documents + '\n' +
+                "LEAVE REQUESTS:" + '\n' + leaveRequests + '\n' +
+                "VIOLATION LISTS :" + '\n' + violationLists + '\n' +
+                "TIMESHEETS:" + '\n' + timesheets + '\n' +
                 '}';
     }
 }

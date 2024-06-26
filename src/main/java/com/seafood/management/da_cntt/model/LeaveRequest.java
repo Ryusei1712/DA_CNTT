@@ -48,12 +48,13 @@ public class LeaveRequest {
 
     @Override
     public String toString() {
-        return "LeaveRequest{" +
-                "employeeName='" + employeeName + '\'' +
-                ", email='" + email + '\'' +
-                ", position='" + position + '\'' +
-                ", reason='" + reason + '\'' +
-                ", requestType='" + requestType + '\'' +
-                '}';
+        return
+                "id=" + id +
+                ", employeeName=" + employeeName +
+                ", email=" + email  +
+                ", position=" + position +
+                ", reason=" + reason +
+                ", requestType=" + requestType +
+                '\n';
     }
 }

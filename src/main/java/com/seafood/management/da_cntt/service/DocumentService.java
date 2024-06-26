@@ -4,11 +4,16 @@ import com.seafood.management.da_cntt.dto.DocumentDTO;
 import com.seafood.management.da_cntt.dto.EmployeeDTO;
 import com.seafood.management.da_cntt.model.Document;
 import com.seafood.management.da_cntt.model.Employee;
+import com.seafood.management.da_cntt.model.LeaveRequest;
 import com.seafood.management.da_cntt.repository.DocumentRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -66,6 +71,17 @@ public class DocumentService {
         }
         return false;
     }
+    @Transactional
+    public boolean deleteDocumentByEmployeeCode(String employeeCode) {
+        Optional<Document> documentOptional = documentRepository.findByEmployeeCode(employeeCode);
+        if (documentOptional.isPresent()) {
+            Document document = documentOptional.get();
+            backupDocumentInfo(document);
+            documentRepository.deleteByEmployeeCode(employeeCode);
+            return true;
+        }
+        return false;
+    }
 
     @Transactional
     public boolean deleteDocumentByEmail(String email) {
@@ -79,5 +95,23 @@ public class DocumentService {
 
     public int countDocumentsByStatus(String status) {
         return documentRepository.countByStatus(status);
+    }
+
+    private void backupDocumentInfo(Document document) {
+        String documentInfo = document.toString();
+        String backupDirectoryPath = "backup/document"; // Specify your backup directory here
+        String backupFilePath = backupDirectoryPath + "/" + document.getSenderName() + ".txt";
+
+        // Create the backup directory if it doesn't exist
+        File backupDirectory = new File(backupDirectoryPath);
+        if (!backupDirectory.exists()) {
+            backupDirectory.mkdirs();
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(backupFilePath))) {
+            writer.write(documentInfo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

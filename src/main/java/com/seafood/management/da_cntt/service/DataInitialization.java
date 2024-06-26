@@ -117,7 +117,7 @@ public class DataInitialization {
         LocalDate startDate = LocalDate.now().minusDays(30);
 
         for (int i = 1; i <= 20; i++) {// số lượng nhân viên
-            for (int j = 0; j < 1; j++) {// ngày trong tháng
+            for (int j = 0; j < 10; j++) {// ngày trong tháng
                 LocalDate randomDate = startDate.plusDays(j);
                 int hoursWorked = random.nextInt(8) + 1;
                 String status = random.nextBoolean() ? "Đã chấm công" : "Chưa chấm công";

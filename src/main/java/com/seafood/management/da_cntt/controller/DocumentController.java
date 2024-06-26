@@ -44,9 +44,9 @@ public class DocumentController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteDocument(@PathVariable Long id) {
-        boolean deleted = documentService.deleteDocument(id);
+    @DeleteMapping("/{employeeCode}")
+    public ResponseEntity<String> deleteDocumentByEmployeeCode(@PathVariable String employeeCode) {
+        boolean deleted = documentService.deleteDocumentByEmployeeCode(employeeCode);
         return deleted ? new ResponseEntity<>("Document has been deleted successfully", HttpStatus.OK)
                 : new ResponseEntity<>("Document not found", HttpStatus.NOT_FOUND);
     }

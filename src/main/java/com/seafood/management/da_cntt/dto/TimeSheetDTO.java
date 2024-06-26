@@ -12,6 +12,8 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 public class TimeSheetDTO {
+    private  Long id;
+
     private String employeeCode;
 
     private String date;
@@ -20,7 +22,8 @@ public class TimeSheetDTO {
 
     private String status;
 
-    public TimeSheetDTO(String employeeCode, String date, int hoursWorked, String status) {
+    public TimeSheetDTO(Long id, String employeeCode, String date, int hoursWorked, String status) {
+        this.id = id;
         this.employeeCode = employeeCode;
         this.date = date;
         this.hoursWorked = hoursWorked;
