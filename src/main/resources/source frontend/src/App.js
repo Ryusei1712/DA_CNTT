@@ -317,11 +317,11 @@ export default function MiniDrawer() {
     const [open, setOpen] = useState(false);
     const [selectedMenu, setSelectedMenu] = useState('');
     const [openSubmenu, setOpenSubmenu] = useState(false);
-
-    // State and handlers for dialog
+    
     const [dialogOpen, setDialogOpen] = useState(false);
     const [dialogType, setDialogType] = useState('');
     const [employeeInfo, setEmployeeInfo] = useState({
+        id: '',
         employeeName: '',
         employeeCode: '',
         email: '',
@@ -329,6 +329,7 @@ export default function MiniDrawer() {
         status: ''
     });
     const [documentInfo, setDocumentInfo] = useState({
+        id: '',
         documentType: '',
         employeeCode: '',
         senderName: '',
@@ -336,6 +337,7 @@ export default function MiniDrawer() {
         status: ''
     });
     const [leaveRequestInfo, setLeaveRequestInfo] = useState({
+        id: '',
         employeeCode: '',
         employeeName: '',
         email: '',
@@ -361,25 +363,26 @@ export default function MiniDrawer() {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
 
+    const [editMode, setEditMode] = useState(false);
+
     useEffect(() => {
-        // 16/4: Lấy dữ liệu nhân viên từ API
-        fetch('api/employees')
-            .then(response => response.json())
-            .then(data => setEmployees(data))
-            .catch(error => console.error('Lỗi khi lấy dữ liệu nhân viên:', error));
+        fetchEmployees();
     }, []);
+
     const fetchEmployees = () => {
         fetch('api/employees')
             .then(response => response.json())
             .then(data => setEmployees(data))
             .catch(error => console.error('Lỗi khi lấy dữ liệu nhân viên:', error));
     };
+
     const fetchTimesheets = () => {
         fetch('api/timesheets')
             .then(response => response.json())
             .then(data => {setTimesheets(data);})
             .catch(error => console.error('Lỗi khi lấy dữ liệu bảng chấm công:', error));
     };
+
     const fetchDocuments = () => {
         fetch('api/documents')
             .then(response => response.json())
@@ -388,6 +391,7 @@ export default function MiniDrawer() {
             })
             .catch(error => console.error('Lỗi khi lấy dữ liệu chứng từ:', error));
     };
+
     const fetchLeaveRequests = () => {
         fetch('api/leaveRequests')
             .then(response => response.json())
@@ -396,6 +400,7 @@ export default function MiniDrawer() {
             })
             .catch(error => console.error('Lỗi khi lấy dữ liệu đơn nghỉ:', error));
     };
+
     const  fetchViolations = () => {
         fetch('api/violationLists')
             .then(response => response.json())
@@ -404,6 +409,7 @@ export default function MiniDrawer() {
             })
             .catch(error => console.error('Lỗi khi lấy dữ liệu vi phạm:', error));
     };
+
     const handleSubmenuClick = (submenu) => {
         if (submenu.title === 'Duyệt chứng từ') {
             fetchDocuments();
@@ -451,11 +457,6 @@ export default function MiniDrawer() {
 
     const handleSearch = (e) => {
         setSearchKeyword(e.target.value);
-    };
-
-    const handleDialogOpen = (type) => {
-        setDialogType(type);
-        setDialogOpen(true);
     };
 
     const handleDialogClose = () => {
@@ -517,7 +518,7 @@ export default function MiniDrawer() {
                 data = leaveRequestInfo;
                 break;
             case 'violation':
-                url = 'api/violations';
+                url = 'api/violationLists';
                 data = violationInfo;
                 break;
             case 'timesheet':
@@ -527,7 +528,7 @@ export default function MiniDrawer() {
             default:
                 break;
         }
-
+        console.log('Data to be sent for adding:', data);
         fetch(url, {
             method: 'POST',
             headers: {
@@ -544,19 +545,19 @@ export default function MiniDrawer() {
             .then(data => {
                 switch (dialogType) {
                     case 'employee':
-                        setEmployees([...employees, data]);
+                        fetchEmployees();
                         break;
                     case 'document':
-                        setDocuments([...documents, data]);
+                        fetchDocuments();
                         break;
                     case 'leaveRequest':
-                        setLeaveRequests([...leaveRequests, data]);
+                        fetchLeaveRequests();
                         break;
                     case 'violation':
-                        setViolations([...violations, data]);
+                       fetchViolations();
                         break;
                     case 'timesheet':
-                        setTimesheets([...timesheets, data]);
+                        fetchTimesheets();
                         break;
                     default:
                         break;
@@ -601,23 +602,18 @@ export default function MiniDrawer() {
                 if (response.ok) {
                     switch (type) {
                         case 'employee':
-                            setEmployees(employees.filter(emp => emp.employeeCode !== id));
                             fetchEmployees();
                             break;
                         case 'document':
-                            setDocuments(documents.filter(doc => doc.id !== id));
                             fetchDocuments();
                             break;
                         case 'leaveRequest':
-                            setLeaveRequests(leaveRequests.filter(req => req.id !== id));
                             fetchLeaveRequests();
                             break;
                         case 'violation':
-                            setViolations(violations.filter(vio => vio.id !== id));
                             fetchViolations();
                             break;
                         case 'timesheet':
-                            setTimesheets(timesheets.filter(ts => ts.id !== id));
                             fetchTimesheets();
                             break;
                         default:
@@ -631,8 +627,103 @@ export default function MiniDrawer() {
     };
 
     const handleEdit = (type, item) => {
-        // Hàm xử lý sửa thông tin
+        setEditMode(true);
+        setDialogType(type);
+        switch (type) {
+            case 'employee':
+                setEmployeeInfo(item);
+                break;
+            case 'document':
+                setDocumentInfo(item);
+                break;
+            case 'leaveRequest':
+                setLeaveRequestInfo(item);
+                break;
+            case 'violation':
+                setViolationInfo(item);
+                break;
+            case 'timesheet':
+                setTimesheetInfo(item);
+                break;
+            default:
+                break;
+        }
+        setDialogOpen(true);
     };
+
+    const handleConfirmEdit = () => {
+        let url = '';
+        let data = {};
+        switch (dialogType) {
+            case 'employee':
+                url = `api/employees/${employeeInfo.id}`; 
+                data = employeeInfo;
+                break;
+            case 'document':
+                url = `api/documents/${documentInfo.id}`; 
+                data = documentInfo;
+                break;
+            case 'leaveRequest':
+                url = `api/leaveRequests/${leaveRequestInfo.id}`; 
+                data = leaveRequestInfo;
+                break;
+            case 'violation':
+                url = `api/violationLists/${violationInfo.id}`; 
+                data = violationInfo;
+                break;
+            case 'timesheet':
+                url = `api/timesheets/${timesheetInfo.id}`; 
+                data = timesheetInfo;
+                break;
+            default:
+                break;
+        }
+
+        fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Lỗi mạng');
+                }
+                return response.json();
+            })
+            .then(updatedItem => {
+                switch (dialogType) {
+                    case 'employee':
+                        fetchEmployees();
+                        break;
+                    case 'document':
+                        fetchDocuments();
+                        break;
+                    case 'leaveRequest':
+                        fetchLeaveRequests();
+                        break;
+                    case 'violation':
+                        fetchViolations()
+                        break;
+                    case 'timesheet':
+                        fetchTimesheets();
+                        break;
+                    default:
+                        break;
+                }
+                setSnackbarMessage('Cập nhật thành công');
+                setSnackbarOpen(true);
+                setDialogOpen(false);
+                setEditMode(false);
+            })
+            .catch(error => {
+                console.error('Lỗi khi cập nhật:', error);
+                setSnackbarMessage('Lỗi khi cập nhật');
+                setSnackbarOpen(true);
+            });
+    };
+
 
     const filteredEmployees = employees.filter(employee =>
         employee.employeeName.toLowerCase().includes(searchKeyword.toLowerCase()) ||
@@ -664,6 +755,66 @@ export default function MiniDrawer() {
 
     const handleCloseSnackbar = () => {
         setSnackbarOpen(false);
+    };
+
+    const handleDialogOpen = (type) => {
+        setDialogType(type);
+        setDialogOpen(true);
+        setEditMode(false); 
+        switch (type) {
+            case 'employee':
+                setEmployeeInfo({
+                    id: '',
+                    employeeName: '',
+                    employeeCode: '',
+                    email: '',
+                    position: '',
+                    status: ''
+                });
+                break;
+            case 'document':
+                setDocumentInfo({
+                    id: '',
+                    documentType: '',
+                    employeeCode: '',
+                    senderName: '',
+                    email: '',
+                    status: ''
+                });
+                break;
+            case 'leaveRequest':
+                setLeaveRequestInfo({
+                    id: '',
+                    employeeCode: '',
+                    employeeName: '',
+                    email: '',
+                    position: '',
+                    reason: '',
+                    requestType: ''
+                });
+                break;
+            case 'violation':
+                setViolationInfo({
+                    id: '',
+                    employeeCode: '',
+                    employeeName: '',
+                    violationType: '',
+                    severity: '',
+                    status: ''
+                });
+                break;
+            case 'timesheet':
+                setTimesheetInfo({
+                    id: '',
+                    employeeCode: '',
+                    date: '',
+                    hoursWorked: '',
+                    status: ''
+                });
+                break;
+            default:
+                break;
+        }
     };
 
     return (
@@ -735,7 +886,6 @@ export default function MiniDrawer() {
                         </div>
                     ))}
                 </List>
-
                 <Divider />
             </Drawer>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
@@ -756,40 +906,40 @@ export default function MiniDrawer() {
                 />
                 {selectedMenu === 'Quản lý nhân sự' && (
                     <>
-                        <Button variant="contained" onClick={() => handleDialogOpen('employee')}sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm nhân viên</Button>
+                        <Button variant="contained" onClick={() => handleDialogOpen('employee')} sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm nhân viên</Button>
                         <EmployeeTable employees={filteredEmployees} handleEdit={(item) => handleEdit('employee', item)} handleDelete={(id) => handleDelete('employee', id)} />
                     </>
                 )}
                 {selectedMenu === 'Duyệt chứng từ' && (
                     <>
-                        <Button variant="contained" onClick={() => handleDialogOpen('document')}sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm chứng từ</Button>
+                        <Button variant="contained" onClick={() => handleDialogOpen('document')} sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm chứng từ</Button>
                         <DocumentTable documents={filteredDocuments} handleEdit={(item) => handleEdit('document', item)} handleDelete={(id) => handleDelete('document', id)} />
                     </>
                 )}
                 {selectedMenu === 'Đơn nghỉ' && (
                     <>
-                        <Button variant="contained" onClick={() => handleDialogOpen('leaveRequest')}sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm đơn nghỉ</Button>
+                        <Button variant="contained" onClick={() => handleDialogOpen('leaveRequest')} sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm đơn nghỉ</Button>
                         <LeaveRequestTable leaveRequests={filteredLeaveRequests} handleEdit={(item) => handleEdit('leaveRequest', item)} handleDelete={(id) => handleDelete('leaveRequest', id)} />
                     </>
                 )}
                 {selectedMenu === 'Vi phạm' && (
                     <>
-                        <Button variant="contained" onClick={() => handleDialogOpen('violation')}sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm vi phạm</Button>
+                        <Button variant="contained" onClick={() => handleDialogOpen('violation')} sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm vi phạm</Button>
                         <ViolationTable violations={filteredViolations} handleEdit={(item) => handleEdit('violation', item)} handleDelete={(id) => handleDelete('violation', id)} />
                     </>
                 )}
                 {selectedMenu === 'Bảng chấm công' && (
                     <>
-                        <Button variant="contained" onClick={() => handleDialogOpen('timesheet')}sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm chấm công</Button>
+                        <Button variant="contained" onClick={() => handleDialogOpen('timesheet')} sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm chấm công</Button>
                         <TimesheetTable timesheets={filteredTimesheets} handleEdit={(item) => handleEdit('timesheet', item)} handleDelete={(id) => handleDelete('timesheet', id)} />
                     </>
                 )}
             </Box>
             <Dialog open={dialogOpen} onClose={handleDialogClose}>
-                <DialogTitle>{`Thêm ${dialogType === 'employee' ? 'nhân viên' : dialogType === 'document' ? 'chứng từ' : dialogType === 'leaveRequest' ? 'đơn nghỉ' : dialogType === 'violation' ? 'vi phạm' : 'chấm công'} mới`}</DialogTitle>
+                <DialogTitle>{editMode ? `Chỉnh sửa ${dialogType === 'employee' ? 'nhân viên' : dialogType === 'document' ? 'chứng từ' : dialogType === 'leaveRequest' ? 'đơn nghỉ' : dialogType === 'violation' ? 'vi phạm' : 'chấm công'}` : `Thêm ${dialogType === 'employee' ? 'nhân viên' : dialogType === 'document' ? 'chứng từ' : dialogType === 'leaveRequest' ? 'đơn nghỉ' : dialogType === 'violation' ? 'vi phạm' : 'chấm công'}`}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        {`Nhập thông tin ${dialogType === 'employee' ? 'nhân viên' : dialogType === 'document' ? 'chứng từ' : dialogType === 'leaveRequest' ? 'đơn nghỉ' : dialogType === 'violation' ? 'vi phạm' : 'chấm công'} mới:`}
+                        {editMode ? `Chỉnh sửa thông tin ${dialogType === 'employee' ? 'nhân viên' : dialogType === 'document' ? 'chứng từ' : dialogType === 'leaveRequest' ? 'đơn nghỉ' : dialogType === 'violation' ? 'vi phạm' : 'chấm công'}` : `Nhập thông tin ${dialogType === 'employee' ? 'nhân viên' : dialogType === 'document' ? 'chứng từ' : dialogType === 'leaveRequest' ? 'đơn nghỉ' : dialogType === 'violation' ? 'vi phạm' : 'chấm công'} mới:`}
                     </DialogContentText>
                     {dialogType === 'employee' && (
                         <>
@@ -813,6 +963,7 @@ export default function MiniDrawer() {
                                 fullWidth
                                 value={employeeInfo.employeeCode}
                                 onChange={handleInputChange}
+                                disabled={editMode}
                             />
                             <TextField
                                 margin="dense"
@@ -861,13 +1012,14 @@ export default function MiniDrawer() {
                             />
                             <TextField
                                 margin="dense"
-                                id="employeeId"
-                                name="employeeId"
+                                id="employeeCode"
+                                name="employeeCode"
                                 label="Mã nhân viên"
                                 type="text"
                                 fullWidth
                                 value={documentInfo.employeeCode}
                                 onChange={handleInputChange}
+                                disabled={editMode}
                             />
                             <TextField
                                 margin="dense"
@@ -906,13 +1058,14 @@ export default function MiniDrawer() {
                             <TextField
                                 autoFocus
                                 margin="dense"
-                                id="employeeId"
-                                name="employeeId"
+                                id="employeeCode"
+                                name="employeeCode"
                                 label="Mã nhân viên"
                                 type="text"
                                 fullWidth
                                 value={leaveRequestInfo.employeeCode}
                                 onChange={handleInputChange}
+                                disabled={editMode}
                             />
                             <TextField
                                 margin="dense"
@@ -923,6 +1076,7 @@ export default function MiniDrawer() {
                                 fullWidth
                                 value={leaveRequestInfo.employeeName}
                                 onChange={handleInputChange}
+                                disabled={editMode}
                             />
                             <TextField
                                 margin="dense"
@@ -971,13 +1125,14 @@ export default function MiniDrawer() {
                             <TextField
                                 autoFocus
                                 margin="dense"
-                                id="employeeId"
-                                name="employeeId"
+                                id="employeeCode"
+                                name="employeeCode"
                                 label="Mã nhân viên"
                                 type="text"
                                 fullWidth
                                 value={violationInfo.employeeCode}
                                 onChange={handleInputChange}
+                                disabled={editMode}
                             />
                             <TextField
                                 margin="dense"
@@ -988,6 +1143,7 @@ export default function MiniDrawer() {
                                 fullWidth
                                 value={violationInfo.employeeName}
                                 onChange={handleInputChange}
+                                disabled={editMode}
                             />
                             <TextField
                                 margin="dense"
@@ -1032,8 +1188,8 @@ export default function MiniDrawer() {
                                 type="text"
                                 fullWidth
                                 value={timesheetInfo.employeeCode}
-
                                 onChange={handleInputChange}
+                                disabled={editMode}
                             />
                             <TextField
                                 margin="dense"
@@ -1070,7 +1226,7 @@ export default function MiniDrawer() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleDialogClose}>Hủy</Button>
-                    <Button onClick={handleConfirmAdd}>Xác nhận</Button>
+                    <Button onClick={editMode ? handleConfirmEdit : handleConfirmAdd}>Xác nhận</Button>
                 </DialogActions>
             </Dialog>
             <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleCloseSnackbar}>
