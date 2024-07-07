@@ -1,5 +1,6 @@
 package com.seafood.management.da_cntt.model;
 
+import com.seafood.management.da_cntt.dto.ViolationListDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import lombok.Setter;
 @Table(name = "violation_list")
 @NoArgsConstructor
 @AllArgsConstructor
-public class ViolationList {
+public class ViolationList{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

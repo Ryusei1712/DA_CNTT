@@ -32,13 +32,13 @@ public class LeaveRequestController {
     }
 
     @PostMapping
-    public ResponseEntity<LeaveRequest> addLeaveRequest(@RequestBody LeaveRequest leaveRequest) {
+    public ResponseEntity<LeaveRequest> addLeaveRequest(@RequestBody LeaveRequestDTO leaveRequest) {
         LeaveRequest savedLeaveRequest = leaveRequestService.saveLeaveRequest(leaveRequest);
         return new ResponseEntity<>(savedLeaveRequest, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<LeaveRequest> updateLeaveRequest(@PathVariable Long id, @RequestBody LeaveRequest leaveRequest) {
+    public ResponseEntity<LeaveRequest> updateLeaveRequest(@PathVariable Long id, @RequestBody LeaveRequestDTO leaveRequest) {
         Optional<LeaveRequest> updatedLeaveRequest = leaveRequestService.updateLeaveRequest(id, leaveRequest);
         return updatedLeaveRequest.map(request -> new ResponseEntity<>(request, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));

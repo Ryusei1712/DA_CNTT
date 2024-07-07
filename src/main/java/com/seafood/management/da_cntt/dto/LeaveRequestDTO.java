@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class LeaveRequestDTO {
+    private  Long id;
 
     private String employeeCode;
 
@@ -22,7 +23,8 @@ public class LeaveRequestDTO {
 
     private String requestType;
 
-    public LeaveRequestDTO(String employeeCode, String employeeName, String email, String position, String reason, String requestType) {
+    public LeaveRequestDTO(Long id, String employeeCode, String employeeName, String email, String position, String reason, String requestType) {
+        this.id = id;
         this.employeeCode = employeeCode;
         this.employeeName = employeeName;
         this.email = email;

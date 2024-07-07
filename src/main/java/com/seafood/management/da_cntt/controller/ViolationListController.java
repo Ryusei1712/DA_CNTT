@@ -32,14 +32,15 @@ public class ViolationListController {
     }
 
     @PostMapping
-    public ResponseEntity<ViolationList> addViolationList(@RequestBody ViolationList violationList) {
-        ViolationList savedViolationList = violationListService.saveViolationList(violationList);
-        return new ResponseEntity<>(savedViolationList, HttpStatus.CREATED);
+    public ResponseEntity<ViolationListDTO> addViolation(@RequestBody ViolationListDTO violationListDTO) {
+        ViolationList savedViolation = violationListService.saveViolationList(violationListDTO);
+        ViolationListDTO savedViolationDTO = violationListService.convertToDTO(savedViolation);
+        return new ResponseEntity<>(savedViolationDTO, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ViolationList> updateViolationList(@PathVariable Long id, @RequestBody ViolationList violationList) {
-        Optional<ViolationList> updatedViolationList = violationListService.updateViolationList(id, violationList);
+    public ResponseEntity<ViolationListDTO> updateViolationList(@PathVariable Long id, @RequestBody ViolationListDTO violationList) {
+        Optional<ViolationListDTO> updatedViolationList = violationListService.updateViolationList(id, violationList);
         return updatedViolationList.map(list -> new ResponseEntity<>(list, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }

@@ -1,6 +1,10 @@
 package com.seafood.management.da_cntt.service;
 
+import com.seafood.management.da_cntt.dto.DocumentDTO;
 import com.seafood.management.da_cntt.dto.EmployeeDTO;
+import com.seafood.management.da_cntt.dto.LeaveRequestDTO;
+import com.seafood.management.da_cntt.dto.TimeSheetDTO;
+import com.seafood.management.da_cntt.dto.ViolationListDTO;
 import com.seafood.management.da_cntt.model.Document;
 import com.seafood.management.da_cntt.model.Employee;
 import com.seafood.management.da_cntt.model.LeaveRequest;
@@ -77,40 +81,40 @@ public class DataInitialization {
         employeeService.saveEmployee(emp20);
 
         // Thêm mẫu dữ liệu cho Document
-        documentService.saveDocument(new Document("Đơn nghỉ phép", emp1, "Nguyễn Văn A", "nguyenvana@gmail.com", "Mới"));
-        documentService.saveDocument(new Document("Đơn nghỉ việc", emp2, "Trần Thị B", "tranthib@gmail.com", "Đã duyệt"));
-        documentService.saveDocument(new Document("Đơn nghỉ chế độ", emp3, "Lê Văn C", "levanc@gmail.com", "Từ chối"));
-        documentService.saveDocument(new Document("Đơn nghỉ chế độ", emp4, "Phạm Thị D", "phamthid@gmail.com", "Mới"));
-        documentService.saveDocument(new Document("Đơn nghỉ phép", emp5, "Hoàng Văn E", "hoangvane@gmail.com", "Đã duyệt"));
-        documentService.saveDocument(new Document("Đơn nghỉ việc", emp6, "Vũ Thị F", "vuthif@gmail.com", "Từ chối"));
-        documentService.saveDocument(new Document("Đơn nghỉ chế độ", emp7, "Đặng Văn G", "dangvang@gmail.com", "Mới"));
-        documentService.saveDocument(new Document("Đơn nghỉ phép", emp8, "Bùi Thị H", "buithih@gmail.com", "Đã duyệt"));
-        documentService.saveDocument(new Document("Đơn nghỉ việc", emp9, "Ngô Văn I", "ngovanf@gmail.com", "Từ chối"));
-        documentService.saveDocument(new Document("Đơn nghỉ chế độ", emp10, "Lý Thị K", "lythik@gmail.com", "Mới"));
+        documentService.saveDocument(new DocumentDTO(null, "NV001", "Đơn nghỉ phép", "Nguyễn Văn A", "nguyenvana@gmail.com", "Mới"));
+        documentService.saveDocument(new DocumentDTO(null, "NV002", "Đơn nghỉ việc", "Trần Thị B", "tranthib@gmail.com", "Đã duyệt"));
+        documentService.saveDocument(new DocumentDTO(null, "NV003", "Đơn nghỉ chế độ", "Lê Văn C", "levanc@gmail.com", "Từ chối"));
+        documentService.saveDocument(new DocumentDTO(null, "NV004", "Đơn nghỉ chế độ", "Phạm Thị D", "phamthid@gmail.com", "Mới"));
+        documentService.saveDocument(new DocumentDTO(null, "NV005", "Đơn nghỉ phép", "Hoàng Văn E", "hoangvane@gmail.com", "Đã duyệt"));
+        documentService.saveDocument(new DocumentDTO(null, "NV006", "Đơn nghỉ việc", "Vũ Thị F", "vuthif@gmail.com", "Từ chối"));
+        documentService.saveDocument(new DocumentDTO(null, "NV007", "Đơn nghỉ chế độ", "Đặng Văn G", "dangvang@gmail.com", "Mới"));
+        documentService.saveDocument(new DocumentDTO(null, "NV008", "Đơn nghỉ phép", "Bùi Thị H", "buithih@gmail.com", "Đã duyệt"));
+        documentService.saveDocument(new DocumentDTO(null, "NV009", "Đơn nghỉ việc", "Ngô Văn I", "ngovanf@gmail.com", "Từ chối"));
+        documentService.saveDocument(new DocumentDTO(null, "NV010", "Đơn nghỉ chế độ", "Lý Thị K", "lythik@gmail.com", "Mới"));
 
         // Thêm mẫu dữ liệu cho LeaveRequest
-        leaveRequestService.saveLeaveRequest(new LeaveRequest(emp1, "Nguyễn Văn A", "nguyenvana@gmail.com", "Nhân viên", "Nghỉ ốm", "Đơn nghỉ phép"));
-        leaveRequestService.saveLeaveRequest(new LeaveRequest(emp2, "Trần Thị B", "tranthib@gmail.com", "Nhân viên", "Nghỉ sinh", "Đơn nghỉ phép"));
-        leaveRequestService.saveLeaveRequest(new LeaveRequest(emp3, "Lê Văn C", "levanc@gmail.com", "Nhân viên", "Nghỉ kết hôn", "Đơn nghỉ phép"));
-        leaveRequestService.saveLeaveRequest(new LeaveRequest(emp4, "Phạm Thị D", "phamthid@gmail.com", "Nhân viên", "Nghỉ chăm sóc con", "Đơn nghỉ phép"));
-        leaveRequestService.saveLeaveRequest(new LeaveRequest(emp5, "Hoàng Văn E", "hoangvane@gmail.com", "Nhân viên", "Nghỉ học tập", "Đơn nghỉ phép"));
-        leaveRequestService.saveLeaveRequest(new LeaveRequest(emp6, "Vũ Thị F", "vuthif@gmail.com", "Nhân viên", "Nghỉ du lịch", "Đơn nghỉ phép"));
-        leaveRequestService.saveLeaveRequest(new LeaveRequest(emp7, "Đặng Văn G", "dangvang@gmail.com", "Nhân viên", "Nghỉ khám bệnh", "Đơn nghỉ phép"));
-        leaveRequestService.saveLeaveRequest(new LeaveRequest(emp8, "Bùi Thị H", "buithih@gmail.com", "Nhân viên", "Nghỉ giải quyết việc gia đình", "Đơn nghỉ phép"));
-        leaveRequestService.saveLeaveRequest(new LeaveRequest(emp9, "Ngô Văn I", "ngovanf@gmail.com", "Nhân viên", "Nghỉ tham gia hoạt động xã hội", "Đơn nghỉ phép"));
-        leaveRequestService.saveLeaveRequest(new LeaveRequest(emp10, "Lý Thị K", "lythik@gmail.com", "Nhân viên", "Nghỉ bảo trì thiết bị", "Đơn nghỉ phép"));
+        leaveRequestService.saveLeaveRequest(new LeaveRequestDTO(null, "NV001", "Nguyễn Văn A", "nguyenvana@gmail.com", "Nhân viên", "Nghỉ ốm", "Đơn nghỉ phép"));
+        leaveRequestService.saveLeaveRequest(new LeaveRequestDTO(null, "NV002", "Trần Thị B", "tranthib@gmail.com", "Nhân viên", "Nghỉ sinh", "Đơn nghỉ phép"));
+        leaveRequestService.saveLeaveRequest(new LeaveRequestDTO(null, "NV003", "Lê Văn C", "levanc@gmail.com", "Nhân viên", "Nghỉ kết hôn", "Đơn nghỉ phép"));
+        leaveRequestService.saveLeaveRequest(new LeaveRequestDTO(null, "NV004", "Phạm Thị D", "phamthid@gmail.com", "Nhân viên", "Nghỉ chăm sóc con", "Đơn nghỉ phép"));
+        leaveRequestService.saveLeaveRequest(new LeaveRequestDTO(null, "NV005", "Hoàng Văn E", "hoangvane@gmail.com", "Nhân viên", "Nghỉ học tập", "Đơn nghỉ phép"));
+        leaveRequestService.saveLeaveRequest(new LeaveRequestDTO(null, "NV006", "Vũ Thị F", "vuthif@gmail.com", "Nhân viên", "Nghỉ du lịch", "Đơn nghỉ phép"));
+        leaveRequestService.saveLeaveRequest(new LeaveRequestDTO(null, "NV007", "Đặng Văn G", "dangvang@gmail.com", "Nhân viên", "Nghỉ khám bệnh", "Đơn nghỉ phép"));
+        leaveRequestService.saveLeaveRequest(new LeaveRequestDTO(null, "NV008", "Bùi Thị H", "buithih@gmail.com", "Nhân viên", "Nghỉ giải quyết việc gia đình", "Đơn nghỉ phép"));
+        leaveRequestService.saveLeaveRequest(new LeaveRequestDTO(null, "NV009", "Ngô Văn I", "ngovanf@gmail.com", "Nhân viên", "Nghỉ tham gia hoạt động xã hội", "Đơn nghỉ phép"));
+        leaveRequestService.saveLeaveRequest(new LeaveRequestDTO(null, "NV010", "Lý Thị K", "lythik@gmail.com", "Nhân viên", "Nghỉ bảo trì thiết bị", "Đơn nghỉ phép"));
 
         // Thêm mẫu dữ liệu cho ViolationList
-        violationListService.saveViolationList(new ViolationList(emp1, "Nguyễn Văn A", "Đi trễ", 1, "Nhắc nhở"));
-        violationListService.saveViolationList(new ViolationList(emp2, "Trần Thị B", "Nghỉ không phép", 2, "Cảnh cáo"));
-        violationListService.saveViolationList(new ViolationList(emp3, "Lê Văn C", "Nghỉ không phép", 2, "Cảnh cáo"));
-        violationListService.saveViolationList(new ViolationList(emp4, "Phạm Thị D", "Phá hoại tài sản", 1, "Nhắc nhở"));
-        violationListService.saveViolationList(new ViolationList(emp5, "Hoàng Văn E", "Gây rối", 2, "Cảnh cáo"));
-        violationListService.saveViolationList(new ViolationList(emp6, "Vũ Thị F", "Đi trễ", 3, "Sa thải"));
-        violationListService.saveViolationList(new ViolationList(emp7, "Đặng Văn G", "Nghỉ không phép", 1, "Nhắc nhở"));
-        violationListService.saveViolationList(new ViolationList(emp8, "Bùi Thị H", "Trộm cắp", 2, "Cảnh cáo"));
-        violationListService.saveViolationList(new ViolationList(emp9, "Ngô Văn I", "Phá hoại tài sản", 3, "Sa thải"));
-        violationListService.saveViolationList(new ViolationList(emp10, "Lý Thị K", "Gây rối", 1, "Nhắc nhở"));
+        violationListService.saveViolationList(new ViolationListDTO(null, "NV001", "Nguyễn Văn A", "Đi trễ", 1, "Nhắc nhở"));
+        violationListService.saveViolationList(new ViolationListDTO(null, "NV002", "Trần Thị B", "Nghỉ không phép", 2, "Cảnh cáo"));
+        violationListService.saveViolationList(new ViolationListDTO(null, "NV003", "Lê Văn C", "Nghỉ không phép", 2, "Cảnh cáo"));
+        violationListService.saveViolationList(new ViolationListDTO(null, "NV004", "Phạm Thị D", "Phá hoại tài sản", 1, "Nhắc nhở"));
+        violationListService.saveViolationList(new ViolationListDTO(null, "NV005", "Hoàng Văn E", "Gây rối", 2, "Cảnh cáo"));
+        violationListService.saveViolationList(new ViolationListDTO(null, "NV006", "Vũ Thị F", "Đi trễ", 3, "Sa thải"));
+        violationListService.saveViolationList(new ViolationListDTO(null, "NV007", "Đặng Văn G", "Nghỉ không phép", 1, "Nhắc nhở"));
+        violationListService.saveViolationList(new ViolationListDTO(null, "NV008", "Bùi Thị H", "Trộm cắp", 2, "Cảnh cáo"));
+        violationListService.saveViolationList(new ViolationListDTO(null, "NV009", "Ngô Văn I", "Phá hoại tài sản", 3, "Sa thải"));
+        violationListService.saveViolationList(new ViolationListDTO(null, "NV010", "Lý Thị K", "Gây rối", 1, "Nhắc nhở"));
 
         // Thêm mẫu dữ liệu cho Timesheet
         Random random = new Random();
@@ -122,7 +126,7 @@ public class DataInitialization {
                 int hoursWorked = random.nextInt(8) + 1;
                 String status = random.nextBoolean() ? "Đã chấm công" : "Chưa chấm công";
                 EmployeeDTO employee = employeeService.findEmployeeByCode(i < 10 ? "NV00" + i : "NV0" + i);
-                timesheetService.saveTimesheet(new Timesheet(employeeService.convertToEntity(employee), randomDate, hoursWorked, status));
+                timesheetService.saveTimesheet(new TimeSheetDTO(null, employee.getEmployeeCode(), randomDate.toString(), hoursWorked, status));
             }
         }
     }

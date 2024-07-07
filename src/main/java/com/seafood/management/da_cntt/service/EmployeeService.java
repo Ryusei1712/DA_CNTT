@@ -74,6 +74,7 @@ public class EmployeeService {
             existingEmployee.setEmployeeName(employee.getEmployeeName());
             existingEmployee.setPosition(employee.getPosition());
             existingEmployee.setStatus(employee.getStatus());
+            backupEmployeeInfo("backup/edit/employee",existingEmployee);
             return Optional.of(employeeRepository.save(existingEmployee));
         } else {
             return Optional.empty();
@@ -93,7 +94,7 @@ public class EmployeeService {
         Optional<Employee> employeeOptional = employeeRepository.findByEmployeeCode(employeeCode);
         if (employeeOptional.isPresent()) {
             Employee employee = employeeOptional.get();
-            backupEmployeeInfo(employee);
+            backupEmployeeInfo("backup/delete/employee",employee);
             employeeRepository.deleteByEmployeeCode(employeeCode);
             return true;
         }
@@ -104,12 +105,11 @@ public class EmployeeService {
         return employeeRepository.countByStatus(status);
     }
 
-    private void backupEmployeeInfo(Employee employee) {
+    private void backupEmployeeInfo(String path, Employee employee) {
         String employeeInfo = employee.toString();
-        String backupDirectoryPath = "backup/employee"; // Specify your backup directory here
+        String backupDirectoryPath = path ;
         String backupFilePath = backupDirectoryPath + "/" + employee.getEmployeeCode() + ".txt";
 
-        // Create the backup directory if it doesn't exist
         File backupDirectory = new File(backupDirectoryPath);
         if (!backupDirectory.exists()) {
             backupDirectory.mkdirs();

@@ -9,6 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class DocumentDTO {
+    private  Long id;
+
     private String employeeCode;
 
     private String documentType;
@@ -19,7 +21,8 @@ public class DocumentDTO {
 
     private String status;
 
-    public DocumentDTO(String employeeCode, String documentType,  String senderName, String email, String status) {
+    public DocumentDTO(Long id, String employeeCode, String documentType, String senderName, String email, String status) {
+        this.id = id;
         this.employeeCode = employeeCode;
         this.documentType = documentType;
         this.senderName = senderName;

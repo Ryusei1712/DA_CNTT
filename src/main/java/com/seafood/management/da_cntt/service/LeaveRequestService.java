@@ -1,10 +1,9 @@
 package com.seafood.management.da_cntt.service;
 
-import com.seafood.management.da_cntt.dto.EmployeeDTO;
 import com.seafood.management.da_cntt.dto.LeaveRequestDTO;
-import com.seafood.management.da_cntt.model.Document;
 import com.seafood.management.da_cntt.model.Employee;
 import com.seafood.management.da_cntt.model.LeaveRequest;
+import com.seafood.management.da_cntt.repository.EmployeeRepository;
 import com.seafood.management.da_cntt.repository.LeaveRequestRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,55 +19,62 @@ import java.util.stream.Collectors;
 
 @Service
 public class LeaveRequestService {
-    private Long id;
-
-    private Employee employee;
-
-    private String employeeName;
-
-    private String email;
-
-    private String position;
-
-    private String reason;
-
-    private String requestType;
     @Autowired
     private LeaveRequestRepository leaveRequestRepository;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
     public LeaveRequestDTO convertToDTO(LeaveRequest leaveRequest) {
-        return new LeaveRequestDTO(leaveRequest.getEmployee().getEmployeeCode(), leaveRequest.getEmployeeName(),
-                leaveRequest.getEmail(),leaveRequest.getPosition(),leaveRequest.getReason(),leaveRequest.getRequestType());
+        return new LeaveRequestDTO(leaveRequest.getId(), leaveRequest.getEmployee().getEmployeeCode(), leaveRequest.getEmployeeName(),
+                leaveRequest.getEmail(), leaveRequest.getPosition(), leaveRequest.getReason(), leaveRequest.getRequestType());
+    }
+
+    public LeaveRequest convertToEntity(LeaveRequestDTO leaveRequestDTO) {
+        Employee employee = employeeRepository.findByEmployeeCode(leaveRequestDTO.getEmployeeCode())
+                .orElseThrow(() -> new IllegalArgumentException("Employee not found for code: " + leaveRequestDTO.getEmployeeCode()));
+
+        LeaveRequest leaveRequest = new LeaveRequest();
+        leaveRequest.setEmployee(employee);
+        leaveRequest.setEmployeeName(leaveRequestDTO.getEmployeeName());
+        leaveRequest.setEmail(leaveRequestDTO.getEmail());
+        leaveRequest.setPosition(leaveRequestDTO.getPosition());
+        leaveRequest.setReason(leaveRequestDTO.getReason());
+        leaveRequest.setRequestType(leaveRequestDTO.getRequestType());
+        return leaveRequest;
     }
 
     public List<LeaveRequestDTO> getAllLeaveRequests() {
-        List<LeaveRequest> leaveRequest = leaveRequestRepository.findAll();
-        return leaveRequest.stream().map(this::convertToDTO).collect(Collectors.toList());
+        List<LeaveRequest> leaveRequests = leaveRequestRepository.findAll();
+        return leaveRequests.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     public Optional<LeaveRequestDTO> getLeaveRequestById(Long id) {
         Optional<LeaveRequest> leaveRequest = leaveRequestRepository.findById(id);
         return leaveRequest.map(this::convertToDTO);
     }
+
     public Optional<LeaveRequest> getLeaveRequestByEmail(String email) {
         return leaveRequestRepository.findByEmail(email);
     }
 
     @Transactional
-    public LeaveRequest saveLeaveRequest(LeaveRequest leaveRequest) {
+    public LeaveRequest saveLeaveRequest(LeaveRequestDTO leaveRequestDTO) {
+        LeaveRequest leaveRequest = convertToEntity(leaveRequestDTO);
         return leaveRequestRepository.save(leaveRequest);
     }
 
     @Transactional
-    public Optional<LeaveRequest> updateLeaveRequest(Long id, LeaveRequest leaveRequest) {
+    public Optional<LeaveRequest> updateLeaveRequest(Long id, LeaveRequestDTO leaveRequestDTO) {
         Optional<LeaveRequest> existingLeaveRequestOptional = leaveRequestRepository.findById(id);
         if (existingLeaveRequestOptional.isPresent()) {
             LeaveRequest existingLeaveRequest = existingLeaveRequestOptional.get();
-            existingLeaveRequest.setEmployee(leaveRequest.getEmployee());
-            existingLeaveRequest.setEmployeeName(leaveRequest.getEmployeeName());
-            existingLeaveRequest.setEmail(leaveRequest.getEmail());
-            existingLeaveRequest.setPosition(leaveRequest.getPosition());
-            existingLeaveRequest.setReason(leaveRequest.getReason());
-            existingLeaveRequest.setRequestType(leaveRequest.getRequestType());
+            existingLeaveRequest.setEmployeeName(leaveRequestDTO.getEmployeeName());
+            existingLeaveRequest.setEmail(leaveRequestDTO.getEmail());
+            existingLeaveRequest.setPosition(leaveRequestDTO.getPosition());
+            existingLeaveRequest.setReason(leaveRequestDTO.getReason());
+            existingLeaveRequest.setRequestType(leaveRequestDTO.getRequestType());
+            backupLeaveRequestsInfo("backup/edit/leaveRequest",existingLeaveRequest);
             return Optional.of(leaveRequestRepository.save(existingLeaveRequest));
         } else {
             return Optional.empty();
@@ -84,17 +90,19 @@ public class LeaveRequestService {
         }
         return false;
     }
+
     @Transactional
     public boolean deleteLeaveRequestByEmployeeCode(String employeeCode) {
         Optional<LeaveRequest> leaveRequestOptional = leaveRequestRepository.findByEmployeeCode(employeeCode);
         if (leaveRequestOptional.isPresent()) {
             LeaveRequest leaveRequest = leaveRequestOptional.get();
-            backupLeaveRequestsInfo(leaveRequest);
+            backupLeaveRequestsInfo("backup/delete/leaveRequest",leaveRequest);
             leaveRequestRepository.deleteByEmployeeCode(employeeCode);
             return true;
         }
         return false;
     }
+
     @Transactional
     public boolean deleteLeaveRequestByEmail(String email) {
         Optional<LeaveRequest> leaveRequestOptional = leaveRequestRepository.findByEmail(email);
@@ -109,9 +117,9 @@ public class LeaveRequestService {
         return leaveRequestRepository.countByRequestType(requestType);
     }
 
-    private void backupLeaveRequestsInfo(LeaveRequest leaveRequest) {
+    private void backupLeaveRequestsInfo(String path, LeaveRequest leaveRequest) {
         String leaveRequestInfo = leaveRequest.toString();
-        String backupDirectoryPath = "backup/leaveRequest"; // Specify your backup directory here
+        String backupDirectoryPath = path;
         String backupFilePath = backupDirectoryPath + "/" + leaveRequest.getEmployeeName() + ".txt";
 
         // Create the backup directory if it doesn't exist

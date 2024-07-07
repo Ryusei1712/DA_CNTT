@@ -32,12 +32,6 @@ public class TimesheetController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/employee/{employeeId}")
-    public ResponseEntity<List<Timesheet>> getTimesheetsByEmployeeId(@PathVariable String employeeId) {
-        List<Timesheet> timesheets = timesheetService.getTimesheetsByEmployeeId(employeeId);
-        return new ResponseEntity<>(timesheets, HttpStatus.OK);
-    }
-
     @GetMapping("/dateRange")
     public ResponseEntity<List<Timesheet>> getTimesheetsByDateRange(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate) {
         List<Timesheet> timesheets = timesheetService.getTimesheetsByDateRange(startDate, endDate);
@@ -45,13 +39,13 @@ public class TimesheetController {
     }
 
     @PostMapping
-    public ResponseEntity<Timesheet> addTimesheet(@RequestBody Timesheet timesheet) {
+    public ResponseEntity<Timesheet> addTimesheet(@RequestBody TimeSheetDTO timesheet) {
         Timesheet savedTimesheet = timesheetService.saveTimesheet(timesheet);
         return new ResponseEntity<>(savedTimesheet, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Timesheet> updateTimesheet(@PathVariable Long id, @RequestBody Timesheet timesheet) {
+    public ResponseEntity<Timesheet> updateTimesheet(@PathVariable Long id, @RequestBody TimeSheetDTO timesheet) {
         Optional<Timesheet> updatedTimesheet = timesheetService.updateTimesheet(id, timesheet);
         return updatedTimesheet.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));

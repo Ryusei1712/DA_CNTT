@@ -1,10 +1,9 @@
 package com.seafood.management.da_cntt.service;
 
-import com.seafood.management.da_cntt.dto.EmployeeDTO;
 import com.seafood.management.da_cntt.dto.TimeSheetDTO;
 import com.seafood.management.da_cntt.model.Employee;
-import com.seafood.management.da_cntt.model.LeaveRequest;
 import com.seafood.management.da_cntt.model.Timesheet;
+import com.seafood.management.da_cntt.repository.EmployeeRepository;
 import com.seafood.management.da_cntt.repository.TimesheetRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,21 +22,35 @@ import java.util.stream.Collectors;
 public class TimesheetService {
     @Autowired
     private TimesheetRepository timesheetRepository;
-    public TimeSheetDTO convertToDTO(Timesheet timeSheet) {
-        return new TimeSheetDTO(timeSheet.getId(), timeSheet.getEmployee().getEmployeeCode(), timeSheet.getDate().toString(),
-                timeSheet.getHoursWorked(), timeSheet.getStatus());
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    public TimeSheetDTO convertToDTO(Timesheet timesheet) {
+        return new TimeSheetDTO(timesheet.getId(), timesheet.getEmployee().getEmployeeCode(), timesheet.getDate().toString(),
+                timesheet.getHoursWorked(), timesheet.getStatus());
     }
+
+    public Timesheet convertToEntity(TimeSheetDTO timesheetDTO) {
+        Employee employee = employeeRepository.findByEmployeeCode(timesheetDTO.getEmployeeCode())
+                .orElseThrow(() -> new IllegalArgumentException("Employee not found for code: " + timesheetDTO.getEmployeeCode()));
+
+        Timesheet timesheet = new Timesheet();
+        timesheet.setEmployee(employee);
+        timesheet.setDate(LocalDate.parse(timesheetDTO.getDate()));
+        timesheet.setHoursWorked(timesheetDTO.getHoursWorked());
+        timesheet.setStatus(timesheetDTO.getStatus());
+        return timesheet;
+    }
+
     public List<TimeSheetDTO> getAllTimesheets() {
-        List<Timesheet> timeSheet = timesheetRepository.findAll();
-        return timeSheet.stream().map(this::convertToDTO).collect(Collectors.toList());
+        List<Timesheet> timesheets = timesheetRepository.findAll();
+        return timesheets.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     public Optional<TimeSheetDTO> getTimesheetById(Long id) {
-        Optional<Timesheet> timeSheet = timesheetRepository.findById(id);
-        return timeSheet.map(this::convertToDTO);
-    }
-    public List<Timesheet> getTimesheetsByEmployeeId(String employeeId) {
-        return timesheetRepository.findByEmployee_EmployeeCode(employeeId);
+        Optional<Timesheet> timesheet = timesheetRepository.findById(id);
+        return timesheet.map(this::convertToDTO);
     }
 
     public List<Timesheet> getTimesheetsByDateRange(LocalDate startDate, LocalDate endDate) {
@@ -45,19 +58,20 @@ public class TimesheetService {
     }
 
     @Transactional
-    public Timesheet saveTimesheet(Timesheet timesheet) {
+    public Timesheet saveTimesheet(TimeSheetDTO timesheetDTO) {
+        Timesheet timesheet = convertToEntity(timesheetDTO);
         return timesheetRepository.save(timesheet);
     }
 
     @Transactional
-    public Optional<Timesheet> updateTimesheet(Long id, Timesheet timesheet) {
+    public Optional<Timesheet> updateTimesheet(Long id, TimeSheetDTO timesheetDTO) {
         Optional<Timesheet> existingTimesheetOptional = timesheetRepository.findById(id);
         if (existingTimesheetOptional.isPresent()) {
             Timesheet existingTimesheet = existingTimesheetOptional.get();
-            existingTimesheet.setEmployee(timesheet.getEmployee());
-            existingTimesheet.setDate(timesheet.getDate());
-            existingTimesheet.setHoursWorked(timesheet.getHoursWorked());
-            existingTimesheet.setStatus(timesheet.getStatus());
+            existingTimesheet.setDate(LocalDate.parse(timesheetDTO.getDate()));
+            existingTimesheet.setHoursWorked(timesheetDTO.getHoursWorked());
+            existingTimesheet.setStatus(timesheetDTO.getStatus());
+            backupTimesheetInfo("backup/edit/timesheet", existingTimesheet);
             return Optional.of(timesheetRepository.save(existingTimesheet));
         } else {
             return Optional.empty();
@@ -69,7 +83,7 @@ public class TimesheetService {
         Optional<Timesheet> timesheetOptional = timesheetRepository.findById(id);
         if (timesheetOptional.isPresent()) {
             Timesheet timesheet = timesheetOptional.get();
-            backupTimesheetInfo(timesheet);
+            backupTimesheetInfo("backup/delete/timesheet", timesheet);
             timesheetRepository.deleteById(id);
             return true;
         }
@@ -80,19 +94,20 @@ public class TimesheetService {
     public boolean deleteTimesheetByEmployeeCode(String employeeCode) {
         List<Timesheet> timesheets = timesheetRepository.findByEmployee_EmployeeCode(employeeCode);
         if (!timesheets.isEmpty()) {
-
+            for (Timesheet timesheet : timesheets) {
+                backupTimesheetInfo("backup/delete/timesheet", timesheet);
+            }
             timesheetRepository.deleteByEmployeeCode(employeeCode);
             return true;
         }
         return false;
     }
 
-    private void backupTimesheetInfo(Timesheet timesheet) {
+    private void backupTimesheetInfo(String path, Timesheet timesheet) {
         String timesheetInfo = timesheet.toString();
-        String backupDirectoryPath = "backup/timesheet"; // Specify your backup directory here
+        String backupDirectoryPath = path;
         String backupFilePath = backupDirectoryPath + "/" + timesheet.getDate() + "_" + timesheet.getEmployee().getEmployeeName() + ".txt";
 
-        // Create the backup directory if it doesn't exist
         File backupDirectory = new File(backupDirectoryPath);
         if (!backupDirectory.exists()) {
             backupDirectory.mkdirs();

@@ -32,7 +32,7 @@ public class DocumentController {
     }
 
     @PostMapping
-    public ResponseEntity<Document> addDocument(@RequestBody Document document) {
+    public ResponseEntity<Document> addDocument(@RequestBody DocumentDTO document) {
         Document savedDocument = documentService.saveDocument(document);
         return new ResponseEntity<>(savedDocument, HttpStatus.CREATED);
     }
