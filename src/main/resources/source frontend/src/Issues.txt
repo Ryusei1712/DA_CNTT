@@ -8,6 +8,7 @@ thêm cột chức vụ cho bảng chấm công
 optional:
 tách module app.js
 tân trang lại giao diện
+coi lại logic của các button thêm m đã làm trước đó
 
 backend:
 sửa lại chỗ chức vụ nhân viên
