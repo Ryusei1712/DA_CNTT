@@ -30,10 +30,9 @@
         <url/>
     </scm>
     <properties>
-        <java.version>17</java.version> <!-- Cập nhật phiên bản Java phù hợp -->
+        <java.version>17</java.version>
     </properties>
     <dependencies>
-        <!-- Không cần khai báo các dependency lại vì đã lấy từ dự án tổng -->
     </dependencies>
 
     <build>
