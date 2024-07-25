@@ -1,0 +1,31 @@
+package com.seafood.management.hr_management.dto;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+public class DocumentDTO {
+    private  Long id;
+
+    private String employeeCode;
+
+    private String documentType;
+
+    private String senderName;
+
+    private String email;
+
+    private String status;
+
+    public DocumentDTO(Long id, String employeeCode, String documentType, String senderName, String email, String status) {
+        this.id = id;
+        this.employeeCode = employeeCode;
+        this.documentType = documentType;
+        this.senderName = senderName;
+        this.email = email;
+        this.status = status;
+    }
+}

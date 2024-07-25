@@ -9,19 +9,54 @@ services:
       - '3306:3306'
     volumes:
       - db_data:/var/lib/mysql
+    networks:
+      - my_network
 
-  seafoodapp:
+  hrmanagement:
     build:
-      context: ..
-      dockerfile: docker/Dockerfile
+      context: ../hr_management
+      dockerfile: Docker/Dockerfile
     ports:
-      - '8080:8080'
+      - '8081:8081'
     depends_on:
       - seafoodmanagement
+    networks:
+      - my_network
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://seafoodmanagement:3306/Seafood_Product_Management
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: seafood123
+      WAIT_HOSTS: seafoodmanagement:3306
+
+
+  productionmanagement:
+    build:
+      context: ../production_management
+      dockerfile: Docker/Dockerfile
+    ports:
+      - '8082:8082'
+    depends_on:
+      - seafoodmanagement
+    networks:
+      - my_network
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://seafoodmanagement:3306/Seafood_Product_Management
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: seafood123
+      WAIT_HOSTS: seafoodmanagement:3306
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Docker/Dockerfile
+    ports:
+      - '80:80'
+    networks:
+      - my_network
 
 volumes:
   db_data:
+
+networks:
+  my_network:
+    driver: bridge

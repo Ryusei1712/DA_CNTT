@@ -1,0 +1,67 @@
+package com.seafood.management.hr_management.controller;
+
+import com.seafood.management.hr_management.dto.ViolationListDTO;
+import com.seafood.management.hr_management.model.ViolationList;
+import com.seafood.management.hr_management.service.ViolationListService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/violationLists")
+@CrossOrigin(origins = "*")
+public class ViolationListController {
+
+    @Autowired
+    private ViolationListService violationListService;
+
+    @GetMapping
+    public ResponseEntity<List<ViolationListDTO>> getAllViolationLists() {
+        List<ViolationListDTO> violationLists = violationListService.getAllViolationLists();
+        return new ResponseEntity<>(violationLists, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ViolationListDTO> getViolationListById(@PathVariable Long id) {
+        Optional<ViolationListDTO> violationList = violationListService.getViolationListById(id);
+        return violationList.map(list -> new ResponseEntity<>(list, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @PostMapping
+    public ResponseEntity<ViolationListDTO> addViolation(@RequestBody ViolationListDTO violationListDTO) {
+        ViolationList savedViolation = violationListService.saveViolationList(violationListDTO);
+        ViolationListDTO savedViolationDTO = violationListService.convertToDTO(savedViolation);
+        return new ResponseEntity<>(savedViolationDTO, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ViolationListDTO> updateViolationList(@PathVariable Long id, @RequestBody ViolationListDTO violationList) {
+        Optional<ViolationListDTO> updatedViolationList = violationListService.updateViolationList(id, violationList);
+        return updatedViolationList.map(list -> new ResponseEntity<>(list, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteViolationList(@PathVariable Long id) {
+        boolean deleted = violationListService.deleteViolationList(id);
+        return deleted ? new ResponseEntity<>("Violation list has been deleted successfully", HttpStatus.OK)
+                : new ResponseEntity<>("Violation list not found", HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/countBySeverity/{severity}")
+    public ResponseEntity<Integer> countViolationListsBySeverity(@PathVariable int severity) {
+        int count = violationListService.countViolationListsBySeverity(severity);
+        return new ResponseEntity<>(count, HttpStatus.OK);
+    }
+
+    @GetMapping("/countByStatus/{status}")
+    public ResponseEntity<Integer> countViolationListsByStatus(@PathVariable String status) {
+        int count = violationListService.countViolationListsByStatus(status);
+        return new ResponseEntity<>(count, HttpStatus.OK);
+    }
+}
