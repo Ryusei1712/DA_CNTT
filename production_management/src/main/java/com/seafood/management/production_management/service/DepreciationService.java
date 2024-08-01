@@ -1,7 +1,6 @@
 package com.seafood.management.production_management.service;
 
 import com.seafood.management.production_management.dto.DepreciationDTO;
-import com.seafood.management.production_management.model.BillOfMaterials;
 import com.seafood.management.production_management.model.Depreciation;
 import com.seafood.management.production_management.repository.*;
 import jakarta.transaction.Transactional;
