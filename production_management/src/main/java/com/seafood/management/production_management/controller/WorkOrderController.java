@@ -1,5 +1,6 @@
 package com.seafood.management.production_management.controller;
 
+import com.seafood.management.production_management.dto.WorkOrderDTO;
 import com.seafood.management.production_management.model.WorkOrder;
 import com.seafood.management.production_management.service.WorkOrderService;
 
@@ -10,14 +11,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/production/work-orders")
+@RequestMapping("/api/production/workorder")
 public class WorkOrderController {
 
     @Autowired
     private WorkOrderService workOrderService;
 
     @GetMapping
-    public ResponseEntity<List<WorkOrder>> getAllWorkOrders() {
+    public ResponseEntity<List<WorkOrderDTO>> getAllWorkOrders() {
         return ResponseEntity.ok(workOrderService.findAllWorkOrders());
     }
 

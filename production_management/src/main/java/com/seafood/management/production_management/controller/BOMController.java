@@ -1,7 +1,6 @@
 package com.seafood.management.production_management.controller;
 
-
-
+import com.seafood.management.production_management.dto.BOMDTO;
 import com.seafood.management.production_management.model.BillOfMaterials;
 import com.seafood.management.production_management.service.BOMService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ public class BOMController {
     private BOMService bomService;
 
     @GetMapping
-    public ResponseEntity<List<BillOfMaterials>> getAllBOMs() {
+    public ResponseEntity<List<BOMDTO>> getAllBOMs() {
         return ResponseEntity.ok(bomService.findAllBillOfMaterials());
     }
 

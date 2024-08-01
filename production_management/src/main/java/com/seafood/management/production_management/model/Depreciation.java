@@ -7,36 +7,36 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "quality_control")
+@Table(name = "depreciation")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class QualityControl {
+public class Depreciation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "inspector", nullable = false)
-    private String inspector;
-    @Column(name = "result", nullable = false)
-    private String result;
     @ManyToOne
     @JoinColumn(name = "production_line_id")
     private ProductionLine productionLine;
+    @Column(name = "numberOfCancellations", nullable = false)
+    private Integer  numberOfCancellations;
+    @Column(name = "status", nullable = false)
+    private String status;
 
-    public QualityControl(String inspector, String result, ProductionLine productionLine) {
-        this.inspector = inspector;
-        this.result = result;
+    public Depreciation(ProductionLine productionLine, Integer numberOfCancellations, String status) {
         this.productionLine = productionLine;
+        this.numberOfCancellations = numberOfCancellations;
+        this.status = status;
     }
 
     @Override
     public String toString() {
-        return "QualityControl{" +
+        return "Depreciation{" +
                 "id=" + id +
-                ", inspector='" + inspector + '\'' +
-                ", result='" + result + '\'' +
                 ", productionLine=" + productionLine +
+                ", numberOfCancellations=" + numberOfCancellations +
+                ", status='" + status + '\'' +
                 '}';
     }
 }

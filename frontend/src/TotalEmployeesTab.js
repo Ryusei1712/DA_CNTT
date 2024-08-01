@@ -8,7 +8,7 @@ const TotalEmployeesTab = () => {
     const [totalEmployees, setTotalEmployees] = useState(0);
 
     useEffect(() => {
-        const fetchTotalEmployees = async () => {
+        const fetchTotalEmployees = async() => {
             try {
                 const response = await fetch('/api/employees');
                 const data = await response.json();
@@ -23,9 +23,12 @@ const TotalEmployeesTab = () => {
         fetchTotalEmployees();
     }, []);
 
-    return (
-        <Box sx={{ mt: 3 }}>
-            <Paper sx={{
+    return ( <
+        Box sx = {
+            { mt: 3 } } >
+        <
+        Paper sx = {
+            {
                 width: 269,
                 height: 88,
                 backgroundColor: '#CAC4C4',
@@ -34,13 +37,18 @@ const TotalEmployeesTab = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-            }}>
-                <PeopleIcon sx={{ fontSize: 48, marginRight: 1 }} />
-                <Typography variant="h6" component="div">
-                    Tổng nhân viên: {totalEmployees}
-                </Typography>
-            </Paper>
-        </Box>
+            }
+        } >
+        <
+        PeopleIcon sx = {
+            { fontSize: 48, marginRight: 1 } }
+        /> <
+        Typography variant = "h6"
+        component = "div" >
+        Tổng nhân viên: { totalEmployees } <
+        /Typography> <
+        /Paper> <
+        /Box>
     );
 };
 

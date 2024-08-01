@@ -12,6 +12,15 @@ services:
     networks:
       - my_network
 
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Docker/Dockerfile
+    ports:
+      - '80:80'
+    networks:
+      - my_network
+
   hrmanagement:
     build:
       context: ../hr_management
@@ -44,16 +53,6 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: seafood123
       WAIT_HOSTS: seafoodmanagement:3306
-
-  frontend:
-    build:
-      context: ../frontend
-      dockerfile: Docker/Dockerfile
-    ports:
-      - '80:80'
-    networks:
-      - my_network
-
 volumes:
   db_data:
 

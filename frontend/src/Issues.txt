@@ -1,18 +1,6 @@
-frontend:
-
-copy app.js cho vô front end gốc
-làm giao diện cho quản lý sản xuất
-thêm router vào
-thêm cột chức vụ cho bảng chấm công
-
-optional:
-tách module app.js
-tân trang lại giao diện
-coi lại logic của các button thêm m đã làm trước đó
-
-backend:
-sửa lại chỗ chức vụ nhân viên
-hoàn thành kĩ backend cho qlsx
-
-goals:
-thao tác được giao tiếp giữa qlxs và qlns
+ProductDM: Quản lý định mức
+WorkOrder: Quản lý công đoạn
+QualityControl: Quản lý chất lượng
+Packaging: Quản lý đóng gói
+Deprciation: Quản lý Khấu hai
+DialogComponent: các textfield khai báo được tách ra từ app.js

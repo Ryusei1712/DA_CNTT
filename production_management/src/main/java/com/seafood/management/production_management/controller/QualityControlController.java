@@ -1,5 +1,6 @@
 package com.seafood.management.production_management.controller;
 
+import com.seafood.management.production_management.dto.QualityControlDTO;
 import com.seafood.management.production_management.model.QualityControl;
 import com.seafood.management.production_management.service.QualityControlService;
 
@@ -10,14 +11,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/production/quality-controls")
+@RequestMapping("/api/production/qualitycontrols")
 public class QualityControlController {
 
     @Autowired
     private QualityControlService qualityControlService;
 
     @GetMapping
-    public ResponseEntity<List<QualityControl>> getAllQualityControls() {
+    public ResponseEntity<List<QualityControlDTO>> getAllQualityControls() {
         return ResponseEntity.ok(qualityControlService.findAllQualityControls());
     }
 

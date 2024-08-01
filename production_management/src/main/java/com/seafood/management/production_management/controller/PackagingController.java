@@ -1,5 +1,6 @@
 package com.seafood.management.production_management.controller;
 
+import com.seafood.management.production_management.dto.PackagingDTO;
 import com.seafood.management.production_management.model.Packaging;
 import com.seafood.management.production_management.service.PackagingService;
 
@@ -17,7 +18,7 @@ public class PackagingController {
     private PackagingService packagingService;
 
     @GetMapping
-    public ResponseEntity<List<Packaging>> getAllPackagings() {
+    public ResponseEntity<List<PackagingDTO>> getAllPackagings() {
         return ResponseEntity.ok(packagingService.findAllPackaging());
     }
 

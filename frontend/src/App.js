@@ -18,34 +18,31 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import GroupIcon from '@mui/icons-material/Group';
 import BusinessIcon from '@mui/icons-material/Business';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import FactoryIcon from '@mui/icons-material/Factory';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import CompanyLogo from './logo.svg';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-const drawerWidth = 320;
+import EmployeeTable from './EmployeeTable'; // Import the EmployeeTable component
+import DocumentTable from './DocumentTable';
+import LeaveRequestTable from './LeaveRequestTable'; // Import the LeaveRequestTable component
+import ViolationTable from './ViolationTable'; // Import the ViolationTable component
+import TimesheetTable from './TimesheetTable'; // Import the TimesheetTable component
+import DialogComponent from './DialogComponent'; // Import DialogComponent
 
+import ProductDM from './ProductDM';
+import QualityControl from './QualityControl';
+import Packaging from './Packaging';
+import Depreciation from './Depreciation';
+import WorkOrder from './WorkOrder';
+
+import useExportToExcel from "./useExportToExcel";
+const drawerWidth = 320;
 const openedMixin = (theme) => ({
     width: drawerWidth,
     transition: theme.transitions.create('width', {
@@ -54,7 +51,6 @@ const openedMixin = (theme) => ({
     }),
     overflowX: 'hidden',
 });
-
 const closedMixin = (theme) => ({
     transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
@@ -66,7 +62,6 @@ const closedMixin = (theme) => ({
         width: `calc(${theme.spacing(8)} + 1px)`,
     },
 });
-
 const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
@@ -74,7 +69,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
     padding: theme.spacing(0, 1),
     ...theme.mixins.toolbar,
 }));
-
 const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme, open }) => ({
@@ -92,7 +86,6 @@ const AppBar = styled(MuiAppBar, {
         }),
     }),
 }));
-
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme, open }) => ({
         width: drawerWidth,
@@ -109,219 +102,30 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
         }),
     }),
 );
-
-const HighlightedTableCell = styled(TableCell)(({ theme }) => ({
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.primary.contrastText,
-}));
-
-function EmployeeTable({ employees, handleEdit, handleDelete }) {
-    return (
-        <TableContainer component={Paper}>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <HighlightedTableCell>Mã nhân viên</HighlightedTableCell>
-                        <HighlightedTableCell>Tên nhân viên</HighlightedTableCell>
-                        <HighlightedTableCell>Email</HighlightedTableCell>
-                        <HighlightedTableCell>Chức vụ</HighlightedTableCell>
-                        <HighlightedTableCell>Trạng thái</HighlightedTableCell>
-                        <HighlightedTableCell>Hành động</HighlightedTableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {employees.map((employee) => (
-                        <TableRow key={employee.employeeCode}>
-                            <TableCell>{employee.employeeCode}</TableCell>
-                            <TableCell>{employee.employeeName}</TableCell>
-                            <TableCell>{employee.email}</TableCell>
-                            <TableCell>{employee.position}</TableCell>
-                            <TableCell>{employee.status}</TableCell>
-                            <TableCell>
-                                <Button onClick={() => handleEdit(employee)}>
-                                    <EditIcon />
-                                </Button>
-                                <Button onClick={() => handleDelete(employee.employeeCode)}>
-                                    <DeleteIcon />
-                                </Button>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
-    );
-}
-
-function DocumentTable({ documents, handleEdit, handleDelete }) {
-    return (
-        <TableContainer component={Paper}>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <HighlightedTableCell>Loại chứng từ</HighlightedTableCell>
-                        <HighlightedTableCell>Mã nhân viên</HighlightedTableCell>
-                        <HighlightedTableCell>Tên người gửi</HighlightedTableCell>
-                        <HighlightedTableCell>Email</HighlightedTableCell>
-                        <HighlightedTableCell>Trạng thái</HighlightedTableCell>
-                        <HighlightedTableCell>Hành động</HighlightedTableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {documents.map((document) => (
-                        <TableRow key={document.employeeCode}>
-                            <TableCell>{document.documentType}</TableCell>
-                            <TableCell>{document.employeeCode}</TableCell>
-                            <TableCell>{document.senderName}</TableCell>
-                            <TableCell>{document.email}</TableCell>
-                            <TableCell>{document.status}</TableCell>
-                            <TableCell>
-                                <Button onClick={() => handleEdit(document)}>
-                                    <EditIcon />
-                                </Button>
-                                <Button onClick={() => handleDelete(document.employeeCode)}>
-                                    <DeleteIcon />
-                                </Button>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
-    );
-}
-
-function LeaveRequestTable({ leaveRequests, handleEdit, handleDelete }) {
-    return (
-        <TableContainer component={Paper}>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <HighlightedTableCell>Mã nhân viên</HighlightedTableCell>
-                        <HighlightedTableCell>Tên nhân viên</HighlightedTableCell>
-                        <HighlightedTableCell>Email</HighlightedTableCell>
-                        <HighlightedTableCell>Chức vụ</HighlightedTableCell>
-                        <HighlightedTableCell>Lý do</HighlightedTableCell>
-                        <HighlightedTableCell>Loại yêu cầu</HighlightedTableCell>
-                        <HighlightedTableCell>Hành động</HighlightedTableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {leaveRequests.map((request) => (
-                        <TableRow key={request.employeeCode}>
-                            <TableCell>{request.employeeCode}</TableCell>
-                            <TableCell>{request.employeeName}</TableCell>
-                            <TableCell>{request.email}</TableCell>
-                            <TableCell>{request.position}</TableCell>
-                            <TableCell>{request.reason}</TableCell>
-                            <TableCell>{request.requestType}</TableCell>
-                            <TableCell>
-                                <Button onClick={() => handleEdit(request)}>
-                                    <EditIcon />
-                                </Button>
-                                <Button onClick={() => handleDelete(request.employeeCode)}>
-                                    <DeleteIcon />
-                                </Button>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
-    );
-}
-
-function ViolationTable({ violations, handleEdit, handleDelete }) {
-    return (
-        <TableContainer component={Paper}>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <HighlightedTableCell>Mã nhân viên</HighlightedTableCell>
-                        <HighlightedTableCell>Tên nhân viên</HighlightedTableCell>
-                        <HighlightedTableCell>Loại vi phạm</HighlightedTableCell>
-                        <HighlightedTableCell>Mức độ nghiêm trọng</HighlightedTableCell>
-                        <HighlightedTableCell>Trạng thái</HighlightedTableCell>
-                        <HighlightedTableCell>Hành động</HighlightedTableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {violations.map((violation) => (
-                        <TableRow key={violation.id}>
-                            <TableCell>{violation.employeeCode}</TableCell>
-                            <TableCell>{violation.employeeName}</TableCell>
-                            <TableCell>{violation.violationType}</TableCell>
-                            <TableCell>{violation.severity}</TableCell>
-                            <TableCell>{violation.status}</TableCell>
-                            <TableCell>
-                                <Button onClick={() => handleEdit(violation)}>
-                                    <EditIcon />
-                                </Button>
-                                <Button onClick={() => handleDelete(violation.id)}>
-                                    <DeleteIcon />
-                                </Button>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
-    );
-}
-
-function TimesheetTable({ timesheets, handleEdit, handleDelete }) {
-    return (
-        <TableContainer component={Paper}>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <HighlightedTableCell>Mã nhân viên</HighlightedTableCell>
-                        <HighlightedTableCell>Ngày</HighlightedTableCell>
-                        <HighlightedTableCell>Giờ làm việc</HighlightedTableCell>
-                        <HighlightedTableCell>Trạng thái</HighlightedTableCell>
-                        <HighlightedTableCell>Hành động</HighlightedTableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {timesheets.map((timesheet) => (
-                        <TableRow key={timesheet.id}>
-                            <TableCell>{timesheet.employeeCode}</TableCell>
-                            <TableCell>{timesheet.date}</TableCell>
-                            <TableCell>{timesheet.hoursWorked}</TableCell>
-                            <TableCell>{timesheet.status}</TableCell>
-                            <TableCell>
-                                <Button onClick={() => handleEdit(timesheet)}>
-                                    <EditIcon />
-                                </Button>
-                                <Button onClick={() => handleDelete(timesheet.id)}>
-                                    <DeleteIcon />
-                                </Button>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
-    );
-}
-
 export default function MiniDrawer() {
     const [employees, setEmployees] = useState([]);
     const [documents, setDocuments] = useState([]);
     const [leaveRequests, setLeaveRequests] = useState([]);
     const [violations, setViolations] = useState([]);
     const [timesheets, setTimesheets] = useState([]);
+    
+    const [productDMs, setProductDMs] = useState([]);
+    const [qualityControls, setQualityControls] = useState([]);
+    const [packagings, setPackagings] = useState([]);
+    const [depreciations, setDepreciations] = useState([]);
+    const [workOrders, setWorkOrders] = useState([]);
+
     const [searchKeyword, setSearchKeyword] = useState('');
 
     const theme = useTheme();
     const [open, setOpen] = useState(false);
     const [selectedMenu, setSelectedMenu] = useState('');
     const [openSubmenu, setOpenSubmenu] = useState(false);
-    
+
+    // State and handlers for dialog
     const [dialogOpen, setDialogOpen] = useState(false);
     const [dialogType, setDialogType] = useState('');
     const [employeeInfo, setEmployeeInfo] = useState({
-        id: '',
         employeeName: '',
         employeeCode: '',
         email: '',
@@ -329,16 +133,14 @@ export default function MiniDrawer() {
         status: ''
     });
     const [documentInfo, setDocumentInfo] = useState({
-        id: '',
         documentType: '',
-        employeeCode: '',
+        employeeId: '',
         senderName: '',
         email: '',
         status: ''
     });
     const [leaveRequestInfo, setLeaveRequestInfo] = useState({
-        id: '',
-        employeeCode: '',
+        employeeId: '',
         employeeName: '',
         email: '',
         position: '',
@@ -346,27 +148,48 @@ export default function MiniDrawer() {
         requestType: ''
     });
     const [violationInfo, setViolationInfo] = useState({
-        id: '',
-        employeeCode: '',
+        employeeId: '',
         employeeName: '',
         violationType: '',
         severity: '',
         status: ''
     });
     const [timesheetInfo, setTimesheetInfo] = useState({
-        id: '',
-        employeeCode: '',
+        employeeId: '',
         date: '',
         hoursWorked: '',
         status: ''
     });
+    
+    const [ProductDMInfo, setProductDMInfo] = useState({
+        productDMName: '',
+        productDMQuantity: '',
+        productDMUnit: '',
+    });
+    const [QualityControlInfo, setQualityControlInfo] = useState({
+        inspector: '',
+        productRun: '',
+        qualityResult: '',
+    });
+    const [PackagingInfo, setPackagingInfo] = useState({
+        packagingDate: '',
+        productID: '',
+        productRun: '',
+    });
+    const [DepreciationInfo, setDepreciationInfo] = useState({
+        productRun: '',
+        numberOfCancellations: '',
+        status: '',
+    });
+    const [WorkOrderInfo, setWorkOrderInfo] = useState({
+        id: '',
+        productionLine: '',
+        workOrderDate: '',
+        sequence: '',
+        status: '',
+    });
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
-
-    const [editMode, setEditMode] = useState(false);
-    useEffect(() => {
-        fetchEmployees();
-    }, []);
 
     const fetchEmployees = () => {
         fetch('http://localhost:8081/api/employees')
@@ -408,7 +231,53 @@ export default function MiniDrawer() {
             })
             .catch(error => console.error('Lỗi khi lấy dữ liệu vi phạm:', error));
     };
-
+    const  fetchProductDM = () => {
+        fetch('http://localhost:8082/api/production/boms')
+            .then(response => response.json())
+            .then(data => {
+                setProductDMs(data);
+            })
+            .catch(error => console.error('Lỗi khi lấy dữ liệu quản lý định mức:', error));
+    };
+    const  fetchQualityControl = () => {
+        fetch('http://localhost:8082/api/production/qualitycontrols')
+            .then(response => response.json())
+            .then(data => {
+                setQualityControls(data);
+            })
+            .catch(error => console.error('Lỗi khi lấy dữ liệu quản lý chất luượng:', error));
+    };
+    const  fetchPakaging = () => {
+        fetch('http://localhost:8082/api/production/packagings')
+            .then(response => response.json())
+            .then(data => {
+                setPackagings(data);
+            })
+            .catch(error => console.error('Lỗi khi lấy dữ liệu quản lý đóng gói:', error));
+    };
+    const  fetchDepreciation = () => {
+        fetch('http://localhost:8082/api/production/depreciation')
+            .then(response => response.json())
+            .then(data => {
+                setDepreciations(data);
+            })
+            .catch(error => console.error('Lỗi khi lấy dữ liệu quản lý khấu hao:', error));
+    };
+    const  fetchWorkOrder = () => {
+        fetch('http://localhost:8082/api/production/workorder')
+            .then(response => response.json())
+            .then(data => {
+                setWorkOrders(data);
+            })
+            .catch(error => console.error('Lỗi khi lấy dữ liệu quản lý công đoạn:', error));
+    };
+    const exportProductDM = useExportToExcel(productDMs, 'quan_ly_dinh_muc.xlsx', 'Quản lý định mức');
+    const exportPackaging = useExportToExcel(packagings, 'quan_ly_dong_goi.xlsx', 'Quản lý đóng gói');
+    const exportDepreciation = useExportToExcel(depreciations, 'quan_ly_khau_hao.xlsx', 'Quản lý khấu hao');
+    const [editMode, setEditMode] = useState(false);
+    useEffect(() => {
+        fetchEmployees();
+    }, []);
     const handleSubmenuClick = (submenu) => {
         if (submenu.title === 'Duyệt chứng từ') {
             fetchDocuments();
@@ -418,10 +287,19 @@ export default function MiniDrawer() {
             fetchViolations();
         }else if (submenu.title === 'Bảng chấm công') {
             fetchTimesheets();
+        }else if (submenu.title === 'Quản lý định mức') {
+            fetchProductDM();
+        }else if(submenu.title === 'Quản lý công đoạn'){
+            fetchWorkOrder();
+        }else if(submenu.title === 'Quản lý chất lượng'){
+            fetchQualityControl();
+        }else if(submenu.title === 'Quản lý đóng gói'){
+            fetchPakaging();
+        }else if(submenu.title === 'Quản lý khấu hao'){
+            fetchDepreciation();
         }
         setSelectedMenu(submenu.title);
     };
-
     const handleMenuClick = (menuItem) => {
         if (menuItem.title === selectedMenu && openSubmenu) {
             setOpenSubmenu(false);
@@ -432,36 +310,37 @@ export default function MiniDrawer() {
             setSelectedMenu(menuItem.title);
             setOpenSubmenu(false);
         }
-    };
-
-    const menuItems = [
+      };
+      const menuItems = [
         { title: 'Quản lý nhân sự', icon: <GroupIcon />, submenus: [
-                { title: 'Duyệt chứng từ', onClick: () => handleSubmenuClick({ title: 'Duyệt chứng từ' }) },
-                { title: 'Bảng chấm công', onClick: () => handleSubmenuClick({ title: 'Bảng chấm công' }) },
-                { title: 'Đơn nghỉ', onClick: () => handleSubmenuClick({ title: 'Đơn nghỉ' }) },
-                { title: 'Vi phạm', onClick: () => handleSubmenuClick({ title: 'Vi phạm' }) },
-            ]},
+            { title: 'Duyệt chứng từ', onClick: () => handleSubmenuClick({ title: 'Duyệt chứng từ' }) },
+            { title: 'Bảng chấm công', onClick: () => handleSubmenuClick({ title: 'Bảng chấm công' }) },
+            { title: 'Đơn nghỉ', onClick: () => handleSubmenuClick({ title: 'Đơn nghỉ' }) },
+            { title: 'Vi phạm', onClick: () => handleSubmenuClick({ title: 'Vi phạm' }) },
+          ]},
+        { title: 'Quản lý Sản Xuất', icon: <FactoryIcon />,  submenus: [
+            { title: 'Quản lý định mức', onClick: () => handleSubmenuClick({ title: 'Quản lý định mức' }) },
+            { title: 'Quản lý công đoạn', onClick: () => handleSubmenuClick({ title: 'Quản lý công đoạn' }) },
+            { title: 'Quản lý chất lượng', onClick: () => handleSubmenuClick({ title: 'Quản lý chất lượng' }) },
+            { title: 'Quản lý đóng gói', onClick: () => handleSubmenuClick({ title: 'Quản lý đóng gói' }) },
+            { title: 'Quản lý khấu hao', onClick: () => handleSubmenuClick({ title: 'Quản lý khấu hao' }) },
+          ]},
         { title: 'Kinh doanh', icon: <BusinessIcon /> },
-        { title: 'Hành chính nhân sự', icon: <ManageAccountsIcon /> },
-        { title: 'Kế toán', icon: <AccountBalanceWalletIcon /> },
-    ];
-
+        { title: 'Logistic', icon: <LocalShippingIcon /> },
+        
+      ];
     const handleDrawerOpen = () => {
         setOpen(true);
     };
-
     const handleDrawerClose = () => {
         setOpen(false);
     };
-
     const handleSearch = (e) => {
         setSearchKeyword(e.target.value);
     };
-
     const handleDialogClose = () => {
         setDialogOpen(false);
     };
-
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         switch (dialogType) {
@@ -495,11 +374,41 @@ export default function MiniDrawer() {
                     [name]: value,
                 }));
                 break;
+            
+            case 'productDM':
+                setProductDMInfo((prevInfo) => ({
+                    ...prevInfo,
+                    [name]: value,
+                }));
+                break;
+            case 'qualityControl':
+                setQualityControlInfo((prevInfo) => ({
+                    ...prevInfo,
+                    [name]: value,
+                }));
+                break;
+            case 'packaging':
+                setPackagingInfo((prevInfo) => ({
+                    ...prevInfo,
+                    [name]: value,
+                }));
+                break;
+            case 'depreciation':
+                setDepreciationInfo((prevInfo) => ({
+                    ...prevInfo,
+                    [name]: value,
+                }));
+                break;
+            case 'workOrder':
+                setWorkOrderInfo((prevInfo) => ({
+                    ...prevInfo,
+                    [name]: value,
+                }));
+                break;
             default:
                 break;
         }
     };
-
     const handleConfirmAdd = () => {
         let url = '';
         let data = {};
@@ -553,7 +462,7 @@ export default function MiniDrawer() {
                         fetchLeaveRequests();
                         break;
                     case 'violation':
-                       fetchViolations();
+                        fetchViolations();
                         break;
                     case 'timesheet':
                         fetchTimesheets();
@@ -571,7 +480,6 @@ export default function MiniDrawer() {
                 setSnackbarOpen(true);
             });
     };
-
     const handleDelete = (type, id) => {
         let url = '';
         switch (type) {
@@ -624,7 +532,6 @@ export default function MiniDrawer() {
         setSnackbarMessage('Xóa thành công');
         setSnackbarOpen(true);
     };
-
     const handleEdit = (type, item) => {
         setEditMode(true);
         setDialogType(type);
@@ -655,23 +562,23 @@ export default function MiniDrawer() {
         let data = {};
         switch (dialogType) {
             case 'employee':
-                url = `http://localhost:8081/api/employees/${employeeInfo.id}`; 
+                url = `http://localhost:8081/api/employees/${employeeInfo.id}`;
                 data = employeeInfo;
                 break;
             case 'document':
-                url = `http://localhost:8081/api/documents/${documentInfo.id}`; 
+                url = `http://localhost:8081/api/documents/${documentInfo.id}`;
                 data = documentInfo;
                 break;
             case 'leaveRequest':
-                url = `http://localhost:8081/api/leaveRequests/${leaveRequestInfo.id}`; 
+                url = `http://localhost:8081/api/leaveRequests/${leaveRequestInfo.id}`;
                 data = leaveRequestInfo;
                 break;
             case 'violation':
-                url = `http://localhost:8081/api/violationLists/${violationInfo.id}`; 
+                url = `http://localhost:8081/api/violationLists/${violationInfo.id}`;
                 data = violationInfo;
                 break;
             case 'timesheet':
-                url = `http://localhost:8081/api/timesheets/${timesheetInfo.id}`; 
+                url = `http://localhost:8081/api/timesheets/${timesheetInfo.id}`;
                 data = timesheetInfo;
                 break;
             default:
@@ -723,7 +630,6 @@ export default function MiniDrawer() {
             });
     };
 
-
     const filteredEmployees = employees.filter(employee =>
         employee.employeeName.toLowerCase().includes(searchKeyword.toLowerCase()) ||
         employee.email.toLowerCase().includes(searchKeyword.toLowerCase())
@@ -751,6 +657,34 @@ export default function MiniDrawer() {
         timesheet.date.toLowerCase().includes(searchKeyword.toLowerCase()) ||
         timesheet.status.toLowerCase().includes(searchKeyword.toLowerCase())
     );
+    
+    const filteredProductDMs = productDMs.filter(productDM =>
+        productDM.productDMName.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        productDM.productDMQuantity.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        productDM.productDMUnit.toLowerCase().includes(searchKeyword.toLowerCase())
+    );
+
+    const filteredQualityControls = qualityControls.filter(qualityControl =>
+        qualityControl.inspector.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        qualityControl.productRun.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        qualityControl.qualityResult.toLowerCase().includes(searchKeyword.toLowerCase())
+    );
+    const filteredPackagings = packagings.filter(packaging =>
+        packaging.packagingDate.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        packaging.productID.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        packaging.productRun.toLowerCase().includes(searchKeyword.toLowerCase())
+    );
+    const filteredDepreciations = depreciations.filter(depreciation =>
+        depreciation.productRun.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        depreciation.numberOfCancellations.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        depreciation.status.toLowerCase().includes(searchKeyword.toLowerCase())
+    );
+    const filteredWorkOrders = workOrders.filter(workOrder =>
+        workOrder.productionLine.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        workOrder.workOrderDate.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        workOrder.sequence.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        workOrder.status.toLowerCase().includes(searchKeyword.toLowerCase())
+    );
 
     const handleCloseSnackbar = () => {
         setSnackbarOpen(false);
@@ -759,7 +693,7 @@ export default function MiniDrawer() {
     const handleDialogOpen = (type) => {
         setDialogType(type);
         setDialogOpen(true);
-        setEditMode(false); 
+        setEditMode(false);
         switch (type) {
             case 'employee':
                 setEmployeeInfo({
@@ -817,6 +751,7 @@ export default function MiniDrawer() {
     };
 
     return (
+    <> 
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             <AppBar position="fixed" open={open}>
@@ -871,20 +806,21 @@ export default function MiniDrawer() {
                                     {menuItem.submenus && (selectedMenu === menuItem.title ? (openSubmenu ? <ExpandLess /> : <ExpandMore />) : null)}
                                 </ListItemButton>
                                 {menuItem.submenus && (
-                                    <Collapse in={openSubmenu && selectedMenu === menuItem.title} timeout="auto" unmountOnExit>
-                                        <List component="div" disablePadding>
-                                            {menuItem.submenus.map((submenu) => (
-                                                <ListItemButton key={submenu.title} onClick={() => handleSubmenuClick(submenu)} sx={{ pl: 4 }}>
-                                                    <ListItemText primary={submenu.title} />
-                                                </ListItemButton>
-                                            ))}
-                                        </List>
-                                    </Collapse>
-                                )}
-                            </ListItem>
+                                <Collapse in={openSubmenu && selectedMenu === menuItem.title} timeout="auto" unmountOnExit>
+                                    <List component="div" disablePadding>
+                                    {menuItem.submenus.map((submenu) => (
+                                        <ListItemButton key={submenu.title} onClick={() => handleSubmenuClick(submenu)} sx={{ pl: 4 }}>
+                                        <ListItemText primary={submenu.title} />
+                                        </ListItemButton>
+                                    ))}
+                    </List>
+                  </Collapse>
+                )}
+              </ListItem>
                         </div>
                     ))}
                 </List>
+
                 <Divider />
             </Drawer>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
@@ -905,334 +841,91 @@ export default function MiniDrawer() {
                 />
                 {selectedMenu === 'Quản lý nhân sự' && (
                     <>
-                        <Button variant="contained" onClick={() => handleDialogOpen('employee')} sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm nhân viên</Button>
+                        <Button variant="contained" onClick={() => handleDialogOpen('employee')}sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm nhân viên</Button>
                         <EmployeeTable employees={filteredEmployees} handleEdit={(item) => handleEdit('employee', item)} handleDelete={(id) => handleDelete('employee', id)} />
                     </>
                 )}
                 {selectedMenu === 'Duyệt chứng từ' && (
                     <>
-                        <Button variant="contained" onClick={() => handleDialogOpen('document')} sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm chứng từ</Button>
+                        <Button variant="contained" onClick={() => handleDialogOpen('document')}sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm chứng từ</Button>
                         <DocumentTable documents={filteredDocuments} handleEdit={(item) => handleEdit('document', item)} handleDelete={(id) => handleDelete('document', id)} />
                     </>
                 )}
                 {selectedMenu === 'Đơn nghỉ' && (
                     <>
-                        <Button variant="contained" onClick={() => handleDialogOpen('leaveRequest')} sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm đơn nghỉ</Button>
+                        <Button variant="contained" onClick={() => handleDialogOpen('leaveRequest')}sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm đơn nghỉ</Button>
                         <LeaveRequestTable leaveRequests={filteredLeaveRequests} handleEdit={(item) => handleEdit('leaveRequest', item)} handleDelete={(id) => handleDelete('leaveRequest', id)} />
                     </>
                 )}
                 {selectedMenu === 'Vi phạm' && (
                     <>
-                        <Button variant="contained" onClick={() => handleDialogOpen('violation')} sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm vi phạm</Button>
+                        <Button variant="contained" onClick={() => handleDialogOpen('violation')}sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm vi phạm</Button>
                         <ViolationTable violations={filteredViolations} handleEdit={(item) => handleEdit('violation', item)} handleDelete={(id) => handleDelete('violation', id)} />
                     </>
                 )}
                 {selectedMenu === 'Bảng chấm công' && (
                     <>
-                        <Button variant="contained" onClick={() => handleDialogOpen('timesheet')} sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm chấm công</Button>
+                        <Button variant="contained" onClick={() => handleDialogOpen('timesheet')}sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm chấm công</Button>
                         <TimesheetTable timesheets={filteredTimesheets} handleEdit={(item) => handleEdit('timesheet', item)} handleDelete={(id) => handleDelete('timesheet', id)} />
                     </>
                 )}
+                {/* Quản lý định mức sản xuất , Buoc 6 */}
+                {selectedMenu === 'Quản lý định mức' && (
+                    <>
+                        <Button variant="contained" sx={{ marginLeft: 2, marginBottom: 2 }}onClick={exportProductDM}>Xuất File</Button>
+                        <ProductDM productDMs={filteredProductDMs} handleEdit={(item) => handleEdit('productDM', item)} handleDelete={(id) => handleDelete('productDM', id)} />
+                    </>
+                )}
+                {selectedMenu === 'Quản lý công đoạn' && (
+                    <>
+                        
+                        <WorkOrder workOrders={filteredWorkOrders} />
+                
+                        
+                    </>
+                )}
+                {selectedMenu === 'Quản lý chất lượng' && (
+                    <>
+                        <QualityControl qualityControls={filteredQualityControls} handleEdit={(item) => handleEdit('qualityControl', item)} handleDelete={(id) => handleDelete('qualityControl', id)} />
+                    </>
+                )}
+                {selectedMenu === 'Quản lý đóng gói' && (
+                    <>
+                        <Button variant="contained" sx={{ marginLeft: 2, marginBottom: 2 }}onClick={exportPackaging}>Xuất File</Button>
+                        <Packaging packagings={filteredPackagings} />
+                    </>
+                )}
+                {selectedMenu === 'Quản lý khấu hao' && (
+                    <>
+                        <Button variant="contained" sx={{ marginLeft: 2, marginBottom: 2 }}onClick={exportDepreciation}>Xuất File</Button>
+                        <Depreciation depreciations={filteredDepreciations} handleDelete={(id) => handleDelete('depreciation', id)} />
+                    </>
+                )}
             </Box>
-            <Dialog open={dialogOpen} onClose={handleDialogClose}>
-                <DialogTitle>{editMode ? `Chỉnh sửa ${dialogType === 'employee' ? 'nhân viên' : dialogType === 'document' ? 'chứng từ' : dialogType === 'leaveRequest' ? 'đơn nghỉ' : dialogType === 'violation' ? 'vi phạm' : 'chấm công'}` : `Thêm ${dialogType === 'employee' ? 'nhân viên' : dialogType === 'document' ? 'chứng từ' : dialogType === 'leaveRequest' ? 'đơn nghỉ' : dialogType === 'violation' ? 'vi phạm' : 'chấm công'}`}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        {editMode ? `Chỉnh sửa thông tin ${dialogType === 'employee' ? 'nhân viên' : dialogType === 'document' ? 'chứng từ' : dialogType === 'leaveRequest' ? 'đơn nghỉ' : dialogType === 'violation' ? 'vi phạm' : 'chấm công'}` : `Nhập thông tin ${dialogType === 'employee' ? 'nhân viên' : dialogType === 'document' ? 'chứng từ' : dialogType === 'leaveRequest' ? 'đơn nghỉ' : dialogType === 'violation' ? 'vi phạm' : 'chấm công'} mới:`}
-                    </DialogContentText>
-                    {dialogType === 'employee' && (
-                        <>
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="employeeName"
-                                name="employeeName"
-                                label="Tên nhân viên"
-                                type="text"
-                                fullWidth
-                                value={employeeInfo.employeeName}
-                                onChange={handleInputChange}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="employeeCode"
-                                name="employeeCode"
-                                label="Mã nhân viên"
-                                type="text"
-                                fullWidth
-                                value={employeeInfo.employeeCode}
-                                onChange={handleInputChange}
-                                disabled={editMode}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="email"
-                                name="email"
-                                label="Email"
-                                type="email"
-                                fullWidth
-                                value={employeeInfo.email}
-                                onChange={handleInputChange}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="position"
-                                name="position"
-                                label="Vị trí"
-                                type="text"
-                                fullWidth
-                                value={employeeInfo.position}
-                                onChange={handleInputChange}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="status"
-                                name="status"
-                                label="Trạng thái"
-                                type="text"
-                                fullWidth
-                                value={employeeInfo.status}
-                                onChange={handleInputChange}
-                            />
-                        </>
-                    )}
-                    {dialogType === 'document' && (
-                        <>
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="documentType"
-                                name="documentType"
-                                label="Loại chứng từ"
-                                type="text"
-                                fullWidth
-                                value={documentInfo.documentType}
-                                onChange={handleInputChange}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="employeeCode"
-                                name="employeeCode"
-                                label="Mã nhân viên"
-                                type="text"
-                                fullWidth
-                                value={documentInfo.employeeCode}
-                                onChange={handleInputChange}
-                                disabled={editMode}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="senderName"
-                                name="senderName"
-                                label="Tên người gửi"
-                                type="text"
-                                fullWidth
-                                value={documentInfo.senderName}
-                                onChange={handleInputChange}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="email"
-                                name="email"
-                                label="Email"
-                                type="email"
-                                fullWidth
-                                value={documentInfo.email}
-                                onChange={handleInputChange}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="status"
-                                name="status"
-                                label="Trạng thái"
-                                type="text"
-                                fullWidth
-                                value={documentInfo.status}
-                                onChange={handleInputChange}
-                            />
-                        </>
-                    )}
-                    {dialogType === 'leaveRequest' && (
-                        <>
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="employeeCode"
-                                name="employeeCode"
-                                label="Mã nhân viên"
-                                type="text"
-                                fullWidth
-                                value={leaveRequestInfo.employeeCode}
-                                onChange={handleInputChange}
-                                disabled={editMode}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="employeeName"
-                                name="employeeName"
-                                label="Tên nhân viên"
-                                type="text"
-                                fullWidth
-                                value={leaveRequestInfo.employeeName}
-                                onChange={handleInputChange}
-                                disabled={editMode}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="email"
-                                name="email"
-                                label="Email"
-                                type="email"
-                                fullWidth
-                                value={leaveRequestInfo.email}
-                                onChange={handleInputChange}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="position"
-                                name="position"
-                                label="Chức vụ"
-                                type="text"
-                                fullWidth
-                                value={leaveRequestInfo.position}
-                                onChange={handleInputChange}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="reason"
-                                name="reason"
-                                label="Lý do"
-                                type="text"
-                                fullWidth
-                                value={leaveRequestInfo.reason}
-                                onChange={handleInputChange}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="requestType"
-                                name="requestType"
-                                label="Loại yêu cầu"
-                                type="text"
-                                fullWidth
-                                value={leaveRequestInfo.requestType}
-                                onChange={handleInputChange}
-                            />
-                        </>
-                    )}
-                    {dialogType === 'violation' && (
-                        <>
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="employeeCode"
-                                name="employeeCode"
-                                label="Mã nhân viên"
-                                type="text"
-                                fullWidth
-                                value={violationInfo.employeeCode}
-                                onChange={handleInputChange}
-                                disabled={editMode}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="employeeName"
-                                name="employeeName"
-                                label="Tên nhân viên"
-                                type="text"
-                                fullWidth
-                                value={violationInfo.employeeName}
-                                onChange={handleInputChange}
-                                disabled={editMode}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="violationType"
-                                name="violationType"
-                                label="Loại vi phạm"
-                                type="text"
-                                fullWidth
-                                value={violationInfo.violationType}
-                                onChange={handleInputChange}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="severity"
-                                name="severity"
-                                label="Mức độ nghiêm trọng"
-                                type="number"
-                                fullWidth
-                                value={violationInfo.severity}
-                                onChange={handleInputChange}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="status"
-                                name="status"
-                                label="Trạng thái"
-                                type="text"
-                                fullWidth
-                                value={violationInfo.status}
-                                onChange={handleInputChange}
-                            />
-                        </>
-                    )}
-                    {dialogType === 'timesheet' && (
-                        <>
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="employeeCode"
-                                name="employeeCode"
-                                label="Mã nhân viên"
-                                type="text"
-                                fullWidth
-                                value={timesheetInfo.employeeCode}
-                                onChange={handleInputChange}
-                                disabled={editMode}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="date"
-                                name="date"
-                                label="Ngày"
-                                type="date"
-                                fullWidth
-                                value={timesheetInfo.date}
-                                onChange={handleInputChange}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="hoursWorked"
-                                name="hoursWorked"
-                                label="Giờ làm việc"
-                                type="number"
-                                fullWidth
-                                value={timesheetInfo.hoursWorked}
-                                onChange={handleInputChange}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="status"
-                                name="status"
-                                label="Trạng thái"
-                                type="text"
-                                fullWidth
-                                value={timesheetInfo.status}
-                                onChange={handleInputChange}
-                            />
-                        </>
-                    )}
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleDialogClose}>Hủy</Button>
-                    <Button onClick={editMode ? handleConfirmEdit : handleConfirmAdd}>Xác nhận</Button>
-                </DialogActions>
-            </Dialog>
-            <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleCloseSnackbar}>
-                <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
-                    {snackbarMessage}
-                </Alert>
-            </Snackbar>
         </Box>
+        <div> 
+            <DialogComponent
+                dialogOpen={dialogOpen}
+                handleDialogClose={handleDialogClose}
+                dialogType={dialogType}
+                employeeInfo={employeeInfo}
+                documentInfo={documentInfo}
+                leaveRequestInfo={leaveRequestInfo}
+                violationInfo={violationInfo}
+                timesheetInfo={timesheetInfo}
+              
+                ProductDMInfo={ProductDMInfo}
+                QualityControlInfo={QualityControlInfo}
+                PackagingInfo={PackagingInfo}
+                DepreciationInfo={DepreciationInfo}
+                WorkOrderInfo={WorkOrderInfo}
+                handleInputChange={handleInputChange}
+                handleConfirmAdd={handleConfirmAdd}
+                snackbarOpen={snackbarOpen}
+                handleCloseSnackbar={handleCloseSnackbar}
+                snackbarMessage={snackbarMessage}
+            />
+        </div>
+    </>
     );
 }

@@ -24,4 +24,20 @@ public class BillOfMaterials {
     private Double quantity;
     @Column(name = "unit", nullable = false)
     private String unit;
+
+    public BillOfMaterials(String materialName, Double quantity, String unit) {
+        this.materialName = materialName;
+        this.quantity = quantity;
+        this.unit = unit;
+    }
+
+    @Override
+    public String toString() {
+        return "BillOfMaterials{" +
+                "id=" + id +
+                ", materialName='" + materialName + '\'' +
+                ", quantity=" + quantity +
+                ", unit='" + unit + '\'' +
+                '}';
+    }
 }

@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "packaging")
 @Getter
@@ -16,12 +18,27 @@ public class Packaging {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "productName", nullable = false)
-    private String productName;
-    @Column(name = "packagingType", nullable = false)
-    private String packagingType;
-    @Column(name = "quantity", nullable = false)
-    private Integer quantity;
-    @Column(name = "status", nullable = false)
-    private String status;
+    @Column(name = "productID", nullable = false)
+    private String productID;
+    @Column(name = "pakagingDate", nullable = false)
+    private LocalDate pakagingDate;
+    @ManyToOne
+    @JoinColumn(name = "production_line_id")
+    private ProductionLine productionLine;
+
+    public Packaging(String productID, LocalDate pakagingDate, ProductionLine productionLine) {
+        this.productID = productID;
+        this.pakagingDate = pakagingDate;
+        this.productionLine = productionLine;
+    }
+
+    @Override
+    public String toString() {
+        return "Packaging{" +
+                "id=" + id +
+                ", productID='" + productID + '\'' +
+                ", pakagingDate=" + pakagingDate +
+                ", productionLine=" + productionLine +
+                '}';
+    }
 }
