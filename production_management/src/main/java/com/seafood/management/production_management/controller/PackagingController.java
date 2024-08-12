@@ -23,7 +23,7 @@ public class PackagingController {
     }
 
     @PostMapping
-    public ResponseEntity<Packaging> createPackaging(@RequestBody Packaging packaging) {
+    public ResponseEntity<Packaging> createPackaging(@RequestBody PackagingDTO packaging) {
         return ResponseEntity.ok(packagingService.savePackaging(packaging));
     }
 

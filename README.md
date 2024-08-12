@@ -1,26 +1,27 @@
 ## REPORTS
 
-## Production Management
- - Bổ sung tầng dto tương ứng với frontend:
-## App.js
- - Merge UI branch Danh
-   - bao gồm tách module ra thành các file nhỏ theo chức năng
-   - bổ sung các chức năng của quản lý sản xuất
- - Bổ sung id cho các đơn vị của quản lý sản xuất
-## ProductDM
- - thêm cột thao tác
- - thêm table cell productDMName
-## Packaging
-- thêm table cell packagingDate
-## Depreciation
-- thêm cột thao tác
-- thêm table cell productRun
-## Depreciation
-- thêm table cell workOrderDate
-## Work Order
-- xét key theo id
-- chỉnh sửa chức năng:
-  - group data theo số lương dây chuyền và tạo số lương table tương ứng
-## Hoàn thiện chức năng xuất file ra Excel
-  -   `useExportToExcel` là một hook tùy chỉnh giúp xuất dữ liệu từ một mảng JSON ra file Excel
-      nhận vào dữ liệu, tên file, và tên sheet để tạo và tải file Excel xuống.
+# Thêm `nginx.conf` để quản lý điều hướng
+ - Giải quyết vấn đề của react router
+# `DiaglogComponent.js`
+- Bỏ component thừa 
+- Chỉnh sửa get status của edit mode
+- Fix handleEdit 
+# `App.js` và các component liên quan
+- Fix filter search
+- Quản lý sản xuất
+  - thêm button tạo nguyên liệu
+  - xử lý api cho button
+- Quản lý công đoạn
+  - xử lý api cho button
+  - quản lý công đoạn sẽ thêm tạo mới quản lý chất lượng, status dựa trên duyệt hay không duyệt
+- Quản lý chất lượng
+  - xử lý duyệt hủy quản lý chất lượng
+  - duyệt quản lý chất lượng sẽ tạo mới đóng gói
+- Quản lý khấu hao
+  - thao tác hủy sẽ đổi status của dây chuyền thành ngừng hoặc đang hoạt động (cho hoạt động trở lại)
+# Bổ sung phương thức backup cho các service
+- quản lý định mức
+- quản lý chất lượng
+- quản lý khấu hao
+# issues cần update:
+- khi duyệt kiểm tra chất lượng cần update approve của quality control thành true để disable button

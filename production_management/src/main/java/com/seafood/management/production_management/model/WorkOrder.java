@@ -19,7 +19,7 @@ public class WorkOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "workOrderDate", nullable = false)
-    private LocalDate workOrderDate ;
+    private String workOrderDate ;
     @Column(name = "sequence", nullable = false)
     private String sequence;
     @Column(name = "status", nullable = false)
@@ -28,7 +28,7 @@ public class WorkOrder {
     @JoinColumn(name = "production_line_id")
     private ProductionLine productionLine;
 
-    public WorkOrder(LocalDate workOrderDate, String sequence, String status, ProductionLine productionLine) {
+    public WorkOrder(String workOrderDate, String sequence, String status, ProductionLine productionLine) {
         this.workOrderDate = workOrderDate;
         this.sequence = sequence;
         this.status = status;

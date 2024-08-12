@@ -17,13 +17,13 @@ function ProductDM({ productDMs, handleEdit, handleDelete }) {
                 <TableBody>
                     {/* Buoc 2 */}
                     {productDMs.map((productDM) => (
-                        <TableRow key={productDM.productDMName}>
+                        <TableRow key={productDM.id}>
                             <TableCell>{productDM.productDMName}</TableCell>
                             <TableCell>{productDM.productDMQuantity}</TableCell>
                             <TableCell>{productDM.productDMUnit}</TableCell>
                             <TableCell>
                                 <Button onClick={() => handleEdit(productDM)}>Sửa</Button>
-                                <Button onClick={() => handleDelete(productDM.productDMName)}>Xóa</Button>
+                                <Button onClick={() => handleDelete(productDM.id)}>Xóa</Button>
                             </TableCell>
                         </TableRow>
                     ))}

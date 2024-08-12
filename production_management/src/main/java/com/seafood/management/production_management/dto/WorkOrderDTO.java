@@ -11,11 +11,11 @@ import java.time.LocalDate;
 public class WorkOrderDTO {
     private  Long id;
     private String productionLine;
-    private LocalDate workOrderDate;
+    private String workOrderDate;
     private String sequence;
     private String status;
 
-    public WorkOrderDTO(Long id, String productionLine, LocalDate workOrderDate, String sequence, String status) {
+    public WorkOrderDTO(Long id, String productionLine, String workOrderDate, String sequence, String status) {
         this.id = id;
         this.productionLine = productionLine;
         this.workOrderDate = workOrderDate;

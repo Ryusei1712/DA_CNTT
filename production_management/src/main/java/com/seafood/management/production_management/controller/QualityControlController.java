@@ -23,7 +23,7 @@ public class QualityControlController {
     }
 
     @PostMapping
-    public ResponseEntity<QualityControl> createQualityControl(@RequestBody QualityControl qualityControl) {
+    public ResponseEntity<QualityControl> createQualityControl(@RequestBody QualityControlDTO qualityControl) {
         return ResponseEntity.ok(qualityControlService.saveQualityControl(qualityControl));
     }
 

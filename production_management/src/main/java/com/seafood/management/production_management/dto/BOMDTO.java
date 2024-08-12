@@ -8,11 +8,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class BOMDTO {
+    private Long id;
     private String productDMName;
     private Double productDMQuantity;
     private String productDMUnit;
 
-    public BOMDTO(String productDMName, Double productDMQuantity, String productDMUnit) {
+    public BOMDTO(Long id, String productDMName, Double productDMQuantity, String productDMUnit) {
+        this.id = id;
         this.productDMName = productDMName;
         this.productDMQuantity = productDMQuantity;
         this.productDMUnit = productDMUnit;

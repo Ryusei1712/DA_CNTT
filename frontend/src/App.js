@@ -42,6 +42,7 @@ import Depreciation from './Depreciation';
 import WorkOrder from './WorkOrder';
 
 import useExportToExcel from "./useExportToExcel";
+import {TableCell} from "@mui/material";
 const drawerWidth = 320;
 const openedMixin = (theme) => ({
     width: drawerWidth,
@@ -162,21 +163,29 @@ export default function MiniDrawer() {
     });
     
     const [ProductDMInfo, setProductDMInfo] = useState({
+        id: '',
         productDMName: '',
         productDMQuantity: '',
         productDMUnit: '',
     });
     const [QualityControlInfo, setQualityControlInfo] = useState({
+        id:'',
         inspector: '',
         productRun: '',
         qualityResult: '',
+        resultDate: '',
+        approved:'',
     });
     const [PackagingInfo, setPackagingInfo] = useState({
+        id:'',
         packagingDate: '',
+        inspector:'',
         productID: '',
         productRun: '',
+        quality:'',
     });
     const [DepreciationInfo, setDepreciationInfo] = useState({
+        id:'',
         productRun: '',
         numberOfCancellations: '',
         status: '',
@@ -190,7 +199,6 @@ export default function MiniDrawer() {
     });
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
-
     const fetchEmployees = () => {
         fetch('http://localhost:8081/api/employees')
             .then(response => response.json())
@@ -327,7 +335,7 @@ export default function MiniDrawer() {
           ]},
         { title: 'Kinh doanh', icon: <BusinessIcon /> },
         { title: 'Logistic', icon: <LocalShippingIcon /> },
-        
+
       ];
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -374,7 +382,7 @@ export default function MiniDrawer() {
                     [name]: value,
                 }));
                 break;
-            
+
             case 'productDM':
                 setProductDMInfo((prevInfo) => ({
                     ...prevInfo,
@@ -433,6 +441,18 @@ export default function MiniDrawer() {
                 url = 'http://localhost:8081/api/timesheets';
                 data = timesheetInfo;
                 break;
+            case 'productDM':
+                url = 'http://localhost:8082/api/production/boms';
+                data = ProductDMInfo;
+                break;
+            case 'qualityControl':
+                url = 'http://localhost:8082/api/production/qualitycontrols';
+                data = QualityControlInfo;
+                break;
+            case 'packaging':
+                url = 'http://localhost:8082/api/production/packagings';
+                data = PackagingInfo;
+                break;
             default:
                 break;
         }
@@ -467,6 +487,12 @@ export default function MiniDrawer() {
                     case 'timesheet':
                         fetchTimesheets();
                         break;
+                    case 'productDM':
+                        fetchProductDM();
+                        break;
+                    case 'qualityControl':
+                        fetchProductDM();
+                        break;
                     default:
                         break;
                 }
@@ -498,6 +524,12 @@ export default function MiniDrawer() {
             case 'timesheet':
                 url = `http://localhost:8081/api/timesheets/${id}`;
                 break;
+            case 'productDM':
+                url = `http://localhost:8082/api/production/boms/${id}`;
+                break;
+            case 'qualityControl':
+                url = `http://localhost:8082/api/production/qualitycontrols/${id}`;
+                break;
             default:
                 break;
         }
@@ -522,6 +554,12 @@ export default function MiniDrawer() {
                             break;
                         case 'timesheet':
                             fetchTimesheets();
+                            break;
+                        case 'productDM':
+                            fetchProductDM();
+                            break;
+                        case 'qualityControl':
+                            fetchQualityControl();
                             break;
                         default:
                             break;
@@ -550,6 +588,9 @@ export default function MiniDrawer() {
                 break;
             case 'timesheet':
                 setTimesheetInfo(item);
+                break;
+            case 'productDM':
+                setProductDMInfo(item);
                 break;
             default:
                 break;
@@ -580,6 +621,18 @@ export default function MiniDrawer() {
             case 'timesheet':
                 url = `http://localhost:8081/api/timesheets/${timesheetInfo.id}`;
                 data = timesheetInfo;
+                break;
+            case 'productDM':
+                url = `http://localhost:8082/api/production/boms/${ProductDMInfo.id}`;
+                data = ProductDMInfo;
+                break;
+            case 'qualityControl':
+                url = `http://localhost:8082/api/production/qualitycontrols/${QualityControlInfo.id}`;
+                data = QualityControlInfo;
+                break;
+            case 'depreciation':
+                url = `http://localhost:8082/api/production/depreciation/${DepreciationInfo.id}`;
+                data = DepreciationInfo;
                 break;
             default:
                 break;
@@ -614,6 +667,15 @@ export default function MiniDrawer() {
                         break;
                     case 'timesheet':
                         fetchTimesheets();
+                        break;
+                    case 'productDM':
+                        fetchProductDM();
+                        break;
+                    case 'qualityControl':
+                        fetchDepreciation();
+                        break;
+                    case 'depreciation':
+                        fetchDepreciation();
                         break;
                     default:
                         break;
@@ -660,23 +722,26 @@ export default function MiniDrawer() {
     
     const filteredProductDMs = productDMs.filter(productDM =>
         productDM.productDMName.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        productDM.productDMQuantity.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        productDM.productDMQuantity.toString().toLowerCase().includes(searchKeyword.toLowerCase()) ||
         productDM.productDMUnit.toLowerCase().includes(searchKeyword.toLowerCase())
     );
 
     const filteredQualityControls = qualityControls.filter(qualityControl =>
         qualityControl.inspector.toLowerCase().includes(searchKeyword.toLowerCase()) ||
         qualityControl.productRun.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        qualityControl.qualityResult.toLowerCase().includes(searchKeyword.toLowerCase())
+        qualityControl.qualityResult.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        qualityControl.resultDate.toLowerCase().includes(searchKeyword.toLowerCase())
     );
     const filteredPackagings = packagings.filter(packaging =>
         packaging.packagingDate.toLowerCase().includes(searchKeyword.toLowerCase()) ||
         packaging.productID.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        packaging.productRun.toLowerCase().includes(searchKeyword.toLowerCase())
+        packaging.productRun.toLowerCase().includes(searchKeyword.toLowerCase())||
+        packaging.inspector.toLowerCase().includes(searchKeyword.toLowerCase())||
+        packaging.quality.toLowerCase().includes(searchKeyword.toLowerCase())
     );
     const filteredDepreciations = depreciations.filter(depreciation =>
         depreciation.productRun.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        depreciation.numberOfCancellations.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        depreciation.numberOfCancellations.toString().toLowerCase().includes(searchKeyword.toLowerCase()) ||
         depreciation.status.toLowerCase().includes(searchKeyword.toLowerCase())
     );
     const filteredWorkOrders = workOrders.filter(workOrder =>
@@ -690,10 +755,13 @@ export default function MiniDrawer() {
         setSnackbarOpen(false);
     };
 
-    const handleDialogOpen = (type) => {
+    const handleDialogOpen = (type, data = {}) => {
+        // console.log('Dialog type:', type);
+        // console.log('Data:', data);
         setDialogType(type);
         setDialogOpen(true);
         setEditMode(false);
+
         switch (type) {
             case 'employee':
                 setEmployeeInfo({
@@ -745,187 +813,253 @@ export default function MiniDrawer() {
                     status: ''
                 });
                 break;
+            case 'productDM':
+                setProductDMInfo({
+                    id: '',
+                    productDMName: '',
+                    productDMQuantity: '',
+                    productDMUnit: '',
+                });
+                break;
+            case 'qualityControl':
+                setQualityControlInfo({
+                    id:'',
+                    inspector: '',
+                    productRun: data.productionLine || '',
+                    qualityResult: data.qualityResult || '',
+                    resultDate: new Date().toISOString().split('T')[0],
+                });
+                break;
+            case 'packaging':
+                setPackagingInfo({
+                    id:'',
+                    packagingDate: new Date().toISOString().split('T')[0],
+                    inspector:'',
+                    productID: data.productID || '',
+                    productRun: data.productRun || '',
+                    quality:data.quality || '',
+                });
+                break;
             default:
                 break;
         }
     };
 
-    return (
-    <> 
-        <Box sx={{ display: 'flex' }}>
-            <CssBaseline />
-            <AppBar position="fixed" open={open}>
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        edge="start"
-                        sx={{
-                            marginRight: 5,
-                            ...(open && { display: 'none' }),
-                        }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6" noWrap component="div">
-                        {selectedMenu}
-                    </Typography>
-                </Toolbar>
-            </AppBar>
-            <Drawer variant="permanent" open={open}>
-                <DrawerHeader>
-                    <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                    </IconButton>
-                </DrawerHeader>
-                <img src={CompanyLogo} alt="Company Logo" width="200" height="200" style={{ marginTop: '-125px' }} />
-                <Divider sx={{ marginTop: '-65px' }} />
-                <List>
-                    {menuItems.map((menuItem) => (
-                        <div key={menuItem.title}>
-                            <ListItem key={menuItem.title} disablePadding sx={{ display: 'block' }}>
-                                <ListItemButton
-                                    sx={{
-                                        minHeight: 48,
-                                        justifyContent: open ? 'initial' : 'center',
-                                        px: 2.5,
-                                    }}
-                                    onClick={() => handleMenuClick(menuItem)}
-                                >
-                                    <ListItemIcon
-                                        sx={{
-                                            minWidth: 0,
-                                            mr: open ? 3 : 'auto',
-                                            justifyContent: 'center',
-                                        }}
-                                    >
-                                        {menuItem.icon}
-                                    </ListItemIcon>
-                                    <ListItemText primary={menuItem.title} sx={{ opacity: open ? 1 : 0 }} />
-                                    {menuItem.submenus && (selectedMenu === menuItem.title ? (openSubmenu ? <ExpandLess /> : <ExpandMore />) : null)}
-                                </ListItemButton>
-                                {menuItem.submenus && (
-                                <Collapse in={openSubmenu && selectedMenu === menuItem.title} timeout="auto" unmountOnExit>
-                                    <List component="div" disablePadding>
-                                    {menuItem.submenus.map((submenu) => (
-                                        <ListItemButton key={submenu.title} onClick={() => handleSubmenuClick(submenu)} sx={{ pl: 4 }}>
-                                        <ListItemText primary={submenu.title} />
-                                        </ListItemButton>
-                                    ))}
-                    </List>
-                  </Collapse>
-                )}
-              </ListItem>
-                        </div>
-                    ))}
-                </List>
 
-                <Divider />
-            </Drawer>
-            <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                <DrawerHeader />
-                <TextField
-                    label="Tìm kiếm"
-                    variant="outlined"
-                    value={searchKeyword}
-                    onChange={handleSearch}
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <SearchIcon />
-                            </InputAdornment>
-                        ),
-                    }}
-                    sx={{ marginBottom: 2 }}
-                />
-                {selectedMenu === 'Quản lý nhân sự' && (
-                    <>
-                        <Button variant="contained" onClick={() => handleDialogOpen('employee')}sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm nhân viên</Button>
-                        <EmployeeTable employees={filteredEmployees} handleEdit={(item) => handleEdit('employee', item)} handleDelete={(id) => handleDelete('employee', id)} />
-                    </>
-                )}
-                {selectedMenu === 'Duyệt chứng từ' && (
-                    <>
-                        <Button variant="contained" onClick={() => handleDialogOpen('document')}sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm chứng từ</Button>
-                        <DocumentTable documents={filteredDocuments} handleEdit={(item) => handleEdit('document', item)} handleDelete={(id) => handleDelete('document', id)} />
-                    </>
-                )}
-                {selectedMenu === 'Đơn nghỉ' && (
-                    <>
-                        <Button variant="contained" onClick={() => handleDialogOpen('leaveRequest')}sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm đơn nghỉ</Button>
-                        <LeaveRequestTable leaveRequests={filteredLeaveRequests} handleEdit={(item) => handleEdit('leaveRequest', item)} handleDelete={(id) => handleDelete('leaveRequest', id)} />
-                    </>
-                )}
-                {selectedMenu === 'Vi phạm' && (
-                    <>
-                        <Button variant="contained" onClick={() => handleDialogOpen('violation')}sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm vi phạm</Button>
-                        <ViolationTable violations={filteredViolations} handleEdit={(item) => handleEdit('violation', item)} handleDelete={(id) => handleDelete('violation', id)} />
-                    </>
-                )}
-                {selectedMenu === 'Bảng chấm công' && (
-                    <>
-                        <Button variant="contained" onClick={() => handleDialogOpen('timesheet')}sx={{ marginLeft: 2, marginBottom: 2 }}>Thêm chấm công</Button>
-                        <TimesheetTable timesheets={filteredTimesheets} handleEdit={(item) => handleEdit('timesheet', item)} handleDelete={(id) => handleDelete('timesheet', id)} />
-                    </>
-                )}
-                {/* Quản lý định mức sản xuất , Buoc 6 */}
-                {selectedMenu === 'Quản lý định mức' && (
-                    <>
-                        <Button variant="contained" sx={{ marginLeft: 2, marginBottom: 2 }}onClick={exportProductDM}>Xuất File</Button>
-                        <ProductDM productDMs={filteredProductDMs} handleEdit={(item) => handleEdit('productDM', item)} handleDelete={(id) => handleDelete('productDM', id)} />
-                    </>
-                )}
-                {selectedMenu === 'Quản lý công đoạn' && (
-                    <>
-                        
-                        <WorkOrder workOrders={filteredWorkOrders} />
-                
-                        
-                    </>
-                )}
-                {selectedMenu === 'Quản lý chất lượng' && (
-                    <>
-                        <QualityControl qualityControls={filteredQualityControls} handleEdit={(item) => handleEdit('qualityControl', item)} handleDelete={(id) => handleDelete('qualityControl', id)} />
-                    </>
-                )}
-                {selectedMenu === 'Quản lý đóng gói' && (
-                    <>
-                        <Button variant="contained" sx={{ marginLeft: 2, marginBottom: 2 }}onClick={exportPackaging}>Xuất File</Button>
-                        <Packaging packagings={filteredPackagings} />
-                    </>
-                )}
-                {selectedMenu === 'Quản lý khấu hao' && (
-                    <>
-                        <Button variant="contained" sx={{ marginLeft: 2, marginBottom: 2 }}onClick={exportDepreciation}>Xuất File</Button>
-                        <Depreciation depreciations={filteredDepreciations} handleDelete={(id) => handleDelete('depreciation', id)} />
-                    </>
-                )}
+
+    return (
+        <>
+            <Box sx={{display: 'flex'}}>
+                <CssBaseline/>
+                <AppBar position="fixed" open={open}>
+                    <Toolbar>
+                        <IconButton
+                            color="inherit"
+                            aria-label="open drawer"
+                            onClick={handleDrawerOpen}
+                            edge="start"
+                            sx={{
+                                marginRight: 5,
+                                ...(open && {display: 'none'}),
+                            }}
+                        >
+                            <MenuIcon/>
+                        </IconButton>
+                        <Typography variant="h6" noWrap component="div">
+                            {selectedMenu}
+                        </Typography>
+                    </Toolbar>
+                </AppBar>
+                <Drawer variant="permanent" open={open}>
+                    <DrawerHeader>
+                        <IconButton onClick={handleDrawerClose}>
+                            {theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
+                        </IconButton>
+                    </DrawerHeader>
+                    <img src={CompanyLogo} alt="Company Logo" width="200" height="200" style={{marginTop: '-125px'}}/>
+                    <Divider sx={{marginTop: '-65px'}}/>
+                    <List>
+                        {menuItems.map((menuItem) => (
+                            <div key={menuItem.title}>
+                                <ListItem key={menuItem.title} disablePadding sx={{display: 'block'}}>
+                                    <ListItemButton
+                                        sx={{
+                                            minHeight: 48,
+                                            justifyContent: open ? 'initial' : 'center',
+                                            px: 2.5,
+                                        }}
+                                        onClick={() => handleMenuClick(menuItem)}
+                                    >
+                                        <ListItemIcon
+                                            sx={{
+                                                minWidth: 0,
+                                                mr: open ? 3 : 'auto',
+                                                justifyContent: 'center',
+                                            }}
+                                        >
+                                            {menuItem.icon}
+                                        </ListItemIcon>
+                                        <ListItemText primary={menuItem.title} sx={{opacity: open ? 1 : 0}}/>
+                                        {menuItem.submenus && (selectedMenu === menuItem.title ? (openSubmenu ?
+                                            <ExpandLess/> : <ExpandMore/>) : null)}
+                                    </ListItemButton>
+                                    {menuItem.submenus && (
+                                        <Collapse in={openSubmenu && selectedMenu === menuItem.title} timeout="auto"
+                                                  unmountOnExit>
+                                            <List component="div" disablePadding>
+                                                {menuItem.submenus.map((submenu) => (
+                                                    <ListItemButton key={submenu.title}
+                                                                    onClick={() => handleSubmenuClick(submenu)}
+                                                                    sx={{pl: 4}}>
+                                                        <ListItemText primary={submenu.title}/>
+                                                    </ListItemButton>
+                                                ))}
+                                            </List>
+                                        </Collapse>
+                                    )}
+                                </ListItem>
+                            </div>
+                        ))}
+                    </List>
+
+                    <Divider/>
+                </Drawer>
+                <Box component="main" sx={{flexGrow: 1, p: 3}}>
+                    <DrawerHeader/>
+                    <TextField
+                        label="Tìm kiếm"
+                        variant="outlined"
+                        value={searchKeyword}
+                        onChange={handleSearch}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchIcon/>
+                                </InputAdornment>
+                            ),
+                        }}
+                        sx={{marginBottom: 2}}
+                    />
+                    {selectedMenu === 'Quản lý nhân sự' && (
+                        <>
+                            <Button variant="contained" onClick={() => handleDialogOpen('employee')}
+                                    sx={{marginLeft: 2, marginBottom: 2}}>Thêm nhân viên</Button>
+                            <EmployeeTable employees={filteredEmployees}
+                                           handleEdit={(item) => handleEdit('employee', item)}
+                                           handleDelete={(id) => handleDelete('employee', id)}/>
+                        </>
+                    )}
+                    {selectedMenu === 'Duyệt chứng từ' && (
+                        <>
+                            <Button variant="contained" onClick={() => handleDialogOpen('document')}
+                                    sx={{marginLeft: 2, marginBottom: 2}}>Thêm chứng từ</Button>
+                            <DocumentTable documents={filteredDocuments}
+                                           handleEdit={(item) => handleEdit('document', item)}
+                                           handleDelete={(id) => handleDelete('document', id)}/>
+                        </>
+                    )}
+                    {selectedMenu === 'Đơn nghỉ' && (
+                        <>
+                            <Button variant="contained" onClick={() => handleDialogOpen('leaveRequest')}
+                                    sx={{marginLeft: 2, marginBottom: 2}}>Thêm đơn nghỉ</Button>
+                            <LeaveRequestTable leaveRequests={filteredLeaveRequests}
+                                               handleEdit={(item) => handleEdit('leaveRequest', item)}
+                                               handleDelete={(id) => handleDelete('leaveRequest', id)}/>
+                        </>
+                    )}
+                    {selectedMenu === 'Vi phạm' && (
+                        <>
+                            <Button variant="contained" onClick={() => handleDialogOpen('violation')}
+                                    sx={{marginLeft: 2, marginBottom: 2}}>Thêm vi phạm</Button>
+                            <ViolationTable violations={filteredViolations}
+                                            handleEdit={(item) => handleEdit('violation', item)}
+                                            handleDelete={(id) => handleDelete('violation', id)}/>
+                        </>
+                    )}
+                    {selectedMenu === 'Bảng chấm công' && (
+                        <>
+                            <Button variant="contained" onClick={() => handleDialogOpen('timesheet')}
+                                    sx={{marginLeft: 2, marginBottom: 2}}>Thêm chấm công</Button>
+                            <TimesheetTable timesheets={filteredTimesheets}
+                                            handleEdit={(item) => handleEdit('timesheet', item)}
+                                            handleDelete={(id) => handleDelete('timesheet', id)}/>
+                        </>
+                    )}
+                    {/* Quản lý định mức sản xuất , Buoc 6 */}
+                    {selectedMenu === 'Quản lý định mức' && (
+                        <>
+                            <Button variant="contained" onClick={() => handleDialogOpen('productDM')}
+                                    sx={{marginLeft: 2, marginBottom: 2}}>Thêm nguyên liệu</Button>
+                            <Button variant="contained" sx={{marginLeft: 2, marginBottom: 2}} onClick={exportProductDM}>Xuất
+                                File</Button>
+                            <ProductDM productDMs={filteredProductDMs}
+                                       handleEdit={(item) => handleEdit('productDM', item)}
+                                       handleDelete={(id) => handleDelete('productDM', id)}/>
+                        </>
+                    )}
+                    {selectedMenu === 'Quản lý công đoạn' && (
+                        <>
+
+                            <WorkOrder workOrders={filteredWorkOrders}
+                                       handleDialogOpen={handleDialogOpen} />
+                        </>
+                    )}
+                    {selectedMenu === 'Quản lý chất lượng' && (
+                        <>
+                            <QualityControl qualityControls={filteredQualityControls}
+                                            handleDelete={(id) => handleDelete('qualityControl', id)}
+                                            handleDialogOpen={handleDialogOpen}
+                                            setDialogType={setDialogType}
+                                            setQualityControlInfo={setQualityControlInfo}
+                                            handleConfirmEdit={handleConfirmEdit}
+                            />
+                        </>
+                    )}
+                    {selectedMenu === 'Quản lý đóng gói' && (
+                        <>
+                            <Button variant="contained" sx={{marginLeft: 2, marginBottom: 2}} onClick={exportPackaging}>Xuất
+                                File</Button>
+                            <Packaging packagings={filteredPackagings}/>
+                        </>
+                    )}
+                    {selectedMenu === 'Quản lý khấu hao' && (
+                        <>
+                            <Button variant="contained" sx={{marginLeft: 2, marginBottom: 2}}
+                                    onClick={exportDepreciation}>Xuất File</Button>
+                            <Depreciation depreciations={filteredDepreciations}
+                                          setDialogType={setDialogType}
+                                          setDepreciationInfo={setDepreciationInfo}
+                                          handleConfirmEdit={handleConfirmEdit}/>
+                        </>
+                    )}
+                </Box>
             </Box>
-        </Box>
-        <div> 
-            <DialogComponent
-                dialogOpen={dialogOpen}
-                handleDialogClose={handleDialogClose}
-                dialogType={dialogType}
-                employeeInfo={employeeInfo}
-                documentInfo={documentInfo}
-                leaveRequestInfo={leaveRequestInfo}
-                violationInfo={violationInfo}
-                timesheetInfo={timesheetInfo}
-              
-                ProductDMInfo={ProductDMInfo}
-                QualityControlInfo={QualityControlInfo}
-                PackagingInfo={PackagingInfo}
-                DepreciationInfo={DepreciationInfo}
-                WorkOrderInfo={WorkOrderInfo}
-                handleInputChange={handleInputChange}
-                handleConfirmAdd={handleConfirmAdd}
-                snackbarOpen={snackbarOpen}
-                handleCloseSnackbar={handleCloseSnackbar}
-                snackbarMessage={snackbarMessage}
-            />
-        </div>
-    </>
+            <div>
+                <DialogComponent
+                    editMode={editMode}
+                    dialogOpen={dialogOpen}
+                    handleDialogClose={handleDialogClose}
+                    dialogType={dialogType}
+                    employeeInfo={employeeInfo}
+                    documentInfo={documentInfo}
+                    leaveRequestInfo={leaveRequestInfo}
+                    violationInfo={violationInfo}
+                    timesheetInfo={timesheetInfo}
+
+                    ProductDMInfo={ProductDMInfo}
+                    QualityControlInfo={QualityControlInfo}
+                    PackagingInfo={PackagingInfo}
+                    DepreciationInfo={DepreciationInfo}
+                    WorkOrderInfo={WorkOrderInfo}
+                    snackbarOpen={snackbarOpen}
+                    snackbarMessage={snackbarMessage}
+                    handleCloseSnackbar={handleCloseSnackbar}
+                    handleInputChange={handleInputChange}
+                    handleConfirmAdd={handleConfirmAdd}
+                    handleConfirmEdit={handleConfirmEdit}
+                />
+
+            </div>
+        </>
     );
 }

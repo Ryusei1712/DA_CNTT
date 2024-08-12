@@ -21,24 +21,13 @@ public class Packaging {
     @Column(name = "productID", nullable = false)
     private String productID;
     @Column(name = "pakagingDate", nullable = false)
-    private LocalDate pakagingDate;
+    private String packagingDate;
+    @Column(name = "inspector", nullable = false)
+    private String inspector;
+    @Column(name = "quality", nullable = false)
+    private String quality;
     @ManyToOne
     @JoinColumn(name = "production_line_id")
     private ProductionLine productionLine;
 
-    public Packaging(String productID, LocalDate pakagingDate, ProductionLine productionLine) {
-        this.productID = productID;
-        this.pakagingDate = pakagingDate;
-        this.productionLine = productionLine;
-    }
-
-    @Override
-    public String toString() {
-        return "Packaging{" +
-                "id=" + id +
-                ", productID='" + productID + '\'' +
-                ", pakagingDate=" + pakagingDate +
-                ", productionLine=" + productionLine +
-                '}';
-    }
 }

@@ -10,13 +10,19 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 public class PackagingDTO {
-    private LocalDate packagingDate;
+    private Long id;
+    private String packagingDate;
+    private String inspector;
     private String productID;
     private String productRun;
+    private String quality;
 
-    public PackagingDTO(LocalDate packagingDate, String productID, String productRun) {
+    public PackagingDTO(Long id, String packagingDate, String inspector, String productID, String productRun, String quality) {
+        this.id = id;
         this.packagingDate = packagingDate;
+        this.inspector = inspector;
         this.productID = productID;
         this.productRun = productRun;
+        this.quality = quality;
     }
 }

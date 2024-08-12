@@ -19,12 +19,12 @@ public class BOMService {
     private BOMRepository bomRepository;
 
     public BOMDTO convertToDTO(BillOfMaterials bom) {
-        return new BOMDTO(bom.getMaterialName(),bom.getQuantity(),bom.getUnit());
+        return new BOMDTO(bom.getId(),bom.getMaterialName(),bom.getQuantity(),bom.getUnit());
     }
 
     public BillOfMaterials convertToEntity(BOMDTO bomdto) {
-        BillOfMaterials billOfMaterials = bomRepository.findByMaterialName(bomdto.getProductDMName())
-                .orElseThrow(() -> new IllegalArgumentException("BOM not found for code: " + bomdto.getProductDMName()));
+        BillOfMaterials billOfMaterials = new BillOfMaterials();
+        billOfMaterials.setId(bomdto.getId());
         billOfMaterials.setMaterialName(bomdto.getProductDMName());
         billOfMaterials.setQuantity(bomdto.getProductDMQuantity());
         billOfMaterials.setUnit(bomdto.getProductDMUnit());
@@ -37,18 +37,35 @@ public class BOMService {
     }
 
     @Transactional
-    public BillOfMaterials saveBillOfMaterials(BillOfMaterials billOfMaterials) {
+    public BillOfMaterials saveBillOfMaterials(BOMDTO bomdto) {
+        BillOfMaterials billOfMaterials = convertToEntity(bomdto);
         return bomRepository.save(billOfMaterials);
     }
 
     @Transactional
-    public BillOfMaterials updateBillOfMaterials(Long id, BillOfMaterials billOfMaterials) {
-        billOfMaterials.setId(id);
-        return bomRepository.save(billOfMaterials);
+    public Optional<BillOfMaterials> updateBillOfMaterials(Long id, BOMDTO billOfMaterials) {
+        Optional<BillOfMaterials> existingBOMOptional = bomRepository.findById(id);
+        if (existingBOMOptional.isPresent()) {
+            BillOfMaterials existingBOM = existingBOMOptional.get();
+            BackupUtil.backupInfo("backup/edit/bom", existingBOM,existingBOM.getMaterialName()+"original");
+            existingBOM.setMaterialName(billOfMaterials.getProductDMName());
+            existingBOM.setQuantity(billOfMaterials.getProductDMQuantity());
+            existingBOM.setUnit(billOfMaterials.getProductDMUnit());
+            BackupUtil.backupInfo("backup/edit/bom", existingBOM,existingBOM.getMaterialName());
+            return Optional.of(bomRepository.save(existingBOM));
+        } else {
+            return Optional.empty();
+        }
     }
-
     @Transactional
-    public void deleteBillOfMaterials(Long id) {
-        bomRepository.deleteById(id);
+    public boolean deleteBillOfMaterials(Long id) {
+        Optional<BillOfMaterials> billOfMaterialsOptional = bomRepository.findById(id);
+        if (billOfMaterialsOptional.isPresent()) {
+            BillOfMaterials bom = billOfMaterialsOptional.get();
+            BackupUtil.backupInfo("backup/delete/bom", bom,bom.getMaterialName());
+            bomRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }

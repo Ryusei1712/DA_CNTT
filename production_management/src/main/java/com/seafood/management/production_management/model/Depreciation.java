@@ -24,17 +24,12 @@ public class Depreciation {
     @Column(name = "status", nullable = false)
     private String status;
 
-    public Depreciation(ProductionLine productionLine, Integer numberOfCancellations, String status) {
-        this.productionLine = productionLine;
-        this.numberOfCancellations = numberOfCancellations;
-        this.status = status;
-    }
 
     @Override
     public String toString() {
         return "Depreciation{" +
                 "id=" + id +
-                ", productionLine=" + productionLine +
+                ", productionLine=" + productionLine.getName() +
                 ", numberOfCancellations=" + numberOfCancellations +
                 ", status='" + status + '\'' +
                 '}';

@@ -1,5 +1,9 @@
 import React from 'react';
-import { TextField, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar, Alert } from '@mui/material';
+import { TextField, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar, Alert, FormControl } from '@mui/material';
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+
 
 export default function DialogComponent({
     dialogOpen,
@@ -10,10 +14,10 @@ export default function DialogComponent({
     leaveRequestInfo,
     violationInfo,
     timesheetInfo,
+    ProductDMInfo,
     QualityControlInfo,
     PackagingInfo,
-    DepreciationInfo,
-    WorkOrderInfo,
+    handleConfirmEdit,
     handleInputChange,
     handleConfirmAdd,
     snackbarOpen,
@@ -24,10 +28,10 @@ export default function DialogComponent({
     return (
         <>
             <Dialog open={dialogOpen} onClose={handleDialogClose}>
-                <DialogTitle>{`Thêm ${dialogType === 'employee' ? 'nhân viên' : dialogType === 'document' ? 'chứng từ' : dialogType === 'leaveRequest' ? 'đơn nghỉ' : dialogType === 'violation' ? 'vi phạm' : 'chấm công'} mới`}</DialogTitle>
+                <DialogTitle>{editMode ? `Chỉnh sửa ${dialogType === 'employee' ? 'nhân viên' : dialogType === 'document' ? 'chứng từ' : dialogType === 'leaveRequest' ? 'đơn nghỉ' : dialogType === 'violation' ? 'vi phạm' : dialogType === 'timesheet' ? 'chấm công' : 'nguyên liệu'}` : `Thêm ${dialogType === 'employee' ? 'nhân viên' : dialogType === 'document' ? 'chứng từ' : dialogType === 'leaveRequest' ? 'đơn nghỉ' : dialogType === 'violation' ? 'vi phạm' : dialogType === 'timesheet' ? 'chấm công' : 'nguyên liệu'}`}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        {`Nhập thông tin ${dialogType === 'employee' ? 'nhân viên' : dialogType === 'document' ? 'chứng từ' : dialogType === 'leaveRequest' ? 'đơn nghỉ' : dialogType === 'violation' ? 'vi phạm' : 'chấm công'} mới:`}
+                        {editMode ? `Chỉnh sửa thông tin ${dialogType === 'employee' ? 'nhân viên' : dialogType === 'document' ? 'chứng từ' : dialogType === 'leaveRequest' ? 'đơn nghỉ' : dialogType === 'violation' ? 'vi phạm' : dialogType === 'timesheet' ? 'chấm công' : 'nguyên liệu'}` : `Nhập thông tin ${dialogType === 'employee' ? 'nhân viên' : dialogType === 'document' ? 'chứng từ' : dialogType === 'leaveRequest' ? 'đơn nghỉ' : dialogType === 'violation' ? 'vi phạm' : dialogType === 'timesheet' ? 'chấm công' : 'nguyên liệu'} mới:`}
                     </DialogContentText>
                     {dialogType === 'employee' && (
                         <>
@@ -312,7 +316,42 @@ export default function DialogComponent({
                             />
                         </>
                     )}
-            
+                    {dialogType === 'productDM' && (
+                        <>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="productDMName"
+                                name="productDMName"
+                                label="Tên nguyên liệu"
+                                type="text"
+                                fullWidth
+                                value={ProductDMInfo.productDMName}
+                                onChange={handleInputChange}
+                            />
+                            <TextField
+                                margin="dense"
+                                id="productDMQuantity"
+                                name="productDMQuantity"
+                                label="Số lượng"
+                                type="number"
+                                fullWidth
+                                value={ProductDMInfo.productDMQuantity}
+                                onChange={handleInputChange}
+                            />
+                            <TextField
+                                margin="dense"
+                                id="productDMUnit"
+                                name="productDMUnit"
+                                label="Đơn vị đo"
+                                type="text"
+                                fullWidth
+                                value={ProductDMInfo.productDMUnit}
+                                onChange={handleInputChange}
+                            />
+                        
+                        </>
+                    )}
                     {dialogType === 'qualityControl' && (
                         <>
                             <TextField
@@ -326,27 +365,6 @@ export default function DialogComponent({
                                 value={QualityControlInfo.inspector}
                                 onChange={handleInputChange}
                             />
-                            <TextField
-                                margin="dense"
-                                id="productRun"
-                                name="productRun"
-                                label="Tên dây chuyền"
-                                type="text"
-                                fullWidth
-                                value={QualityControlInfo.productRun}
-                                onChange={handleInputChange}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="qualityResult"
-                                name="qualityResult"
-                                label="Kết quả chất lượng"
-                                type="text"
-                                fullWidth
-                                value={QualityControlInfo.qualityResult}
-                                onChange={handleInputChange}
-                            />
-                        
                         </>
                     )}
                     {dialogType === 'packaging' && (
@@ -354,113 +372,20 @@ export default function DialogComponent({
                             <TextField
                                 autoFocus
                                 margin="dense"
-                                id="packagingDate"
-                                name="packingDate"
-                                label="Ngày sản xuất"
-                                type="date"
-                                fullWidth
-                                value={PackagingInfo.packagingDate}
-                                onChange={handleInputChange}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="productID"
-                                name="productID"
-                                label="Mã sản phẩm"
-                                type="number"
-                                fullWidth
-                                value={PackagingInfo.productID}
-                                onChange={handleInputChange}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="productRun"
-                                name="productRun"
-                                label="Tên dây chuyền"
+                                id="inspector"
+                                name="inspector"
+                                label="Người kiểm tra"
                                 type="text"
                                 fullWidth
-                                value={PackagingInfo.productRun}
+                                value={PackagingInfo.inspector}
                                 onChange={handleInputChange}
                             />
-                        
-                        </>
-                    )}
-                    {dialogType === 'depreciation' && (
-                        <>
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="productRun"
-                                name="productRune"
-                                label="Tên dây chuyền"
-                                type="text"
-                                fullWidth
-                                value={DepreciationInfo.productRun}
-                                onChange={handleInputChange}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="numberOfCancellations"
-                                name="numberOfCancellations"
-                                label="Số lần bị hủy"
-                                type="number"
-                                fullWidth
-                                value={DepreciationInfo.numberOfCancellations}
-                                onChange={handleInputChange}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="status"
-                                name="status"
-                                label="Thao tác"
-                
-                                fullWidth
-                                value={DepreciationInfo.status}
-                                onChange={handleInputChange}
-                            />
-                        
-                        </>
-                    )}
-                    {dialogType === 'workOrder' && (
-                        <>
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="workOrderDate"
-                                name="workOrderDate"
-                                label="Ngày sản xuất"
-                                type="date"
-                                fullWidth
-                                value={WorkOrderInfo.WorkOrderDate}
-                                onChange={handleInputChange}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="sequence"
-                                name="sequence"
-                                label="Tên công đoạn"
-                                type="text"
-                                fullWidth
-                                value={WorkOrderInfo.sequence}
-                                onChange={handleInputChange}
-                            />
-                            <TextField
-                                margin="dense"
-                                id="status"
-                                name="status"
-                                label="Thao tác"
-                
-                                fullWidth
-                                value={WorkOrderInfo.status}
-                                onChange={handleInputChange}
-                            />
-                        
                         </>
                     )}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleDialogClose}>Hủy</Button>
-                    <Button onClick={handleConfirmAdd}>Xác nhận</Button>
+                    <Button onClick={editMode ? handleConfirmEdit : handleConfirmAdd}>Xác nhận</Button>
                 </DialogActions>
             </Dialog>
             <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleCloseSnackbar}>

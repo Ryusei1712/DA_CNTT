@@ -8,7 +8,4 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface BOMRepository extends JpaRepository<BillOfMaterials, Long> {
-    @Query("SELECT b FROM BillOfMaterials b WHERE b.materialName = :productDMName")
-    Optional<BillOfMaterials> findByMaterialName(String productDMName);
-}
+public interface BOMRepository extends JpaRepository<BillOfMaterials, Long> { }

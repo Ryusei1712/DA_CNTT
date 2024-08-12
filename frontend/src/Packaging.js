@@ -11,15 +11,19 @@ function Packaging({ packagings }) {
                         <HighlightedTableCell>Ngày sản xuất</HighlightedTableCell>
                         <HighlightedTableCell>Mã sản phẩm</HighlightedTableCell>
                         <HighlightedTableCell>Tên dây chuyền</HighlightedTableCell>
+                        <HighlightedTableCell>Người duyệt</HighlightedTableCell>
+                        <HighlightedTableCell>Chất lượng</HighlightedTableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {/* Buoc 2 */}
                     {packagings.map((packaging) => (
-                        <TableRow key={packaging.packagingDate}>
+                        <TableRow key={packaging.id}>
                             <TableCell>{packaging.packagingDate}</TableCell>
                             <TableCell>{packaging.productID}</TableCell>
                             <TableCell>{packaging.productRun}</TableCell>
+                            <TableCell>{packaging.inspector}</TableCell>
+                            <TableCell>{packaging.quality}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
